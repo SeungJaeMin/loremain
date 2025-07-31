@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 function NewsDetailPage() {
   const { id } = useParams();
@@ -20,15 +20,19 @@ function NewsDetailPage() {
   };
 
   return (
-    <div className="news-detail-page" style={{ maxWidth: 800, margin: "0 auto", padding: 32 }}>
-      <h1>{news.title}</h1>
-      <div style={{ color: "#888", marginBottom: 16 }}>
-        {news.date} | {news.author}
+    <div className="news-detail-page">
+      <Link to="/news" className="back-button">
+        ← 뉴스 목록으로 돌아가기
+      </Link>
+      <div className="detail-header">
+        <h1 className="detail-title">{news.title}</h1>
+        <div className="detail-meta">
+          {news.date} | {news.author}
+        </div>
       </div>
-      <img src={news.image} alt={news.title} style={{ width: "100%", borderRadius: 8, marginBottom: 24 }} />
+      <img src={news.image} alt={news.title} className="detail-image" />
       <div
-        className="news-content"
-        style={{ fontSize: 18, lineHeight: 1.7 }}
+        className="detail-content"
         dangerouslySetInnerHTML={{ __html: news.content }}
       />
     </div>

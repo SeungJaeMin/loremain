@@ -1,10 +1,10 @@
 function CompanyInfoPage() {
   const companyInfo = {
-    name: "LORECRAFT CO.",
+    name: "LORECRAFT",
     established: "2025년",
     ceo: "손형직",
     address: "경기도 수원시 어딘가구 어딘가길 123",
-    business: "TCG, 미디어 콘텐츠, 커뮤니티운영",
+    business: "IP개발, TCG, 커뮤니티, 콘텐츠 플랫폼 서비스",
     employees: "5명",
     capital: "-"
   };
@@ -13,7 +13,8 @@ function CompanyInfoPage() {
     <div className="company-info-page">
       <div className="page-container">
         <header className="page-header">
-          <h1>회사소개</h1>          
+          <h1>회사소개</h1>
+          <p>창의적인 콘텐츠와 혁신적인 기술로 새로운 엔터테인먼트 경험을 선사하는 로어크래프트를 소개합니다.</p>
         </header>
 
         <section className="company-overview">
@@ -27,7 +28,7 @@ function CompanyInfoPage() {
               <p>{companyInfo.established}</p>
             </div>
             <div className="info-card">
-              <h3>대표이사</h3>
+              <h3>대표</h3>
               <p>{companyInfo.ceo}</p>
             </div>
             <div className="info-card">

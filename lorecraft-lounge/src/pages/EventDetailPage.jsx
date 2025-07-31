@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 function EventDetailPage() {
   const { id } = useParams();
@@ -21,15 +21,19 @@ function EventDetailPage() {
   };
 
   return (
-    <div className="event-detail-page" style={{ maxWidth: 800, margin: "0 auto", padding: 32 }}>
-      <h1>{event.title}</h1>
-      <div style={{ color: "#888", marginBottom: 16 }}>
-        {event.date} | {event.author}
+    <div className="event-detail-page">
+      <Link to="/events" className="back-button">
+        ← 이벤트 목록으로 돌아가기
+      </Link>
+      <div className="detail-header">
+        <h1 className="detail-title">{event.title}</h1>
+        <div className="detail-meta">
+          {event.date} | {event.author}
+        </div>
       </div>
-      <img src={event.image} alt={event.title} style={{ width: "100%", borderRadius: 8, marginBottom: 24 }} />
+      <img src={event.image} alt={event.title} className="detail-image" />
       <div
-        className="event-content"
-        style={{ fontSize: 18, lineHeight: 1.7 }}
+        className="detail-content"
         dangerouslySetInnerHTML={{ __html: event.content }}
       />
     </div>
