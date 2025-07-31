@@ -35,7 +35,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         
         {/* 메인 레이아웃을 사용하는 페이지들 */}
-        <Route path="/" element={<Layout user={user} isAdmin={isAdmin} />}>
+        <Route path="/" element={<Layout />}>
           
           {/* 일반 사용자 페이지들 */}
           <Route index element={<HomePage />} />

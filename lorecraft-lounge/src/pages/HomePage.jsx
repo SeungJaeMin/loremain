@@ -1,94 +1,59 @@
-import { Link } from 'react-router-dom'
-
 function HomePage() {
-  // Mock 데이터
-  const recentNews = [
-    { id: 1, title: "Lorecraft 신규 서비스 런칭", date: "2025-07-25" },
-    { id: 2, title: "Q2 실적 발표", date: "2025-07-20" },
-    { id: 3, title: "새로운 파트너십 체결", date: "2025-07-15" }
-  ];
-
-  const upcomingEvents = [
-    { id: 1, title: "분기별 전체 회의", date: "2025-08-01" },
-    { id: 2, title: "기술 세미나", date: "2025-08-10" }
-  ];
-
   return (
     <div className="home-page">
-      <div className="hero-section">
-        <h1>🏢 Lorecraft Company</h1>
-        <p>혁신적인 기술로 미래를 만들어가는 회사</p>
-        <div className="hero-buttons">
-          <Link to="/company/info" className="btn btn-primary">
-            회사 소개 보기
-          </Link>
-          <Link to="/company/vision" className="btn btn-secondary">
-            비전 확인하기
-          </Link>
+      <section className="video-section">
+        <div className="video-container">
+          <iframe
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/LgoyDPMuEBs?autoplay=1&mute=1&loop=1&playlist=LgoyDPMuEBs&controls=0&disablekb=1&modestbranding=1&showinfo=0&start=13"
+            title="YouTube video"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen={false}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100%",
+              pointerEvents: "none",
+              objectFit: "cover"
+            }}
+            tabIndex={-1}
+          />
+                    <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100%",
+              background: "rgba(0,0,0,0.3)",
+              zIndex: 1,
+              pointerEvents: "none"
+            }}
+          />
+          <div
+            className="video-overlay"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+              zIndex: 2,
+              color: "white",
+              textAlign: "center"
+            }}
+          ></div>
+          <div className="video-overlay">
+            <h1 className="company-title">LORECRAFT</h1>
+            <p className="company-subtitle">
+              IP를 이용한 TCG, 미디어 콘텐츠, 커뮤니티를 운영하는 기업
+            </p>
+          </div>
         </div>
-      </div>
-
-      <div className="content-grid">
-        
-        {/* 최근 뉴스 */}
-        <section className="content-card">
-          <div className="card-header">
-            <h2>📰 최근 뉴스</h2>
-            <Link to="/news" className="view-all">전체보기 →</Link>
-          </div>
-          <div className="news-list">
-            {recentNews.map(news => (
-              <Link 
-                key={news.id} 
-                to={`/news/${news.id}`} 
-                className="news-item"
-              >
-                <span className="news-title">{news.title}</span>
-                <span className="news-date">{news.date}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* 다가오는 이벤트 */}
-        <section className="content-card">
-          <div className="card-header">
-            <h2>🎉 다가오는 이벤트</h2>
-            <Link to="/events" className="view-all">전체보기 →</Link>
-          </div>
-          <div className="event-list">
-            {upcomingEvents.map(event => (
-              <Link 
-                key={event.id} 
-                to={`/events/${event.id}`} 
-                className="event-item"
-              >
-                <span className="event-title">{event.title}</span>
-                <span className="event-date">{event.date}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* 빠른 링크 */}
-        <section className="content-card">
-          <div className="card-header">
-            <h2>🔗 빠른 링크</h2>
-          </div>
-          <div className="quick-links">
-            <Link to="/irbook" className="quick-link">
-              📊 IRBook 보기
-            </Link>
-            <Link to="/company/vision" className="quick-link">
-              🎯 회사 비전
-            </Link>
-            <Link to="/events" className="quick-link">
-              🎉 이벤트 목록
-            </Link>
-          </div>
-        </section>
-
-      </div>
+      </section>
     </div>
   )
 }
