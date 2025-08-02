@@ -2,7 +2,7 @@ function CompanyInfoPage() {
   const companyInfo = {
     name: "LORECRAFT",
     established: "2025년",
-    ceo: "손형직",
+    ceo: "홍길동",
     address: "경기도 수원시 어딘가구 어딘가길 123",
     business: "IP개발, TCG, 커뮤니티, 콘텐츠 플랫폼 서비스",
     employees: "5명",

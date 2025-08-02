@@ -6,7 +6,7 @@ function Footer() {
       name: "LORECRAFT",
       description: "We craft lore and adventures for everyone.",
       established: "2025년",
-      ceo: "손형직"
+      ceo: "홍길동"
     },
     contact: {
       address: "경기도 수원시 어딘가구 어딘가길 123",
