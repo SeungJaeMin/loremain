@@ -1,67 +1,99 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { eventService } from '../services/eventService';
 
 function EventListPage() {
-  const eventsData = [
-    {
-      id: 1,
-      title: "2025 AGF(아시아 게임 페스티벌) 부스 참가",
-      description: "8월 1일부터 3일까지 개최되는 AGF에서 로어크래프트 부스를 운영합니다. 최신 TCG와 굿즈를 만나보세요!",
-      date: "2025-08-01",
-      endDate: "2025-08-03",
-      location: "서울 코엑스",
-      type: "전시회",
-      status: "upcoming",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "제1회 TCG Estela Masters 대회",
-      description: "국내 최대 규모의 TCG 토너먼트! 우승자에게는 100만원 상금과 특별 카드를 증정합니다.",
-      date: "2025-08-10",
-      endDate: "2025-08-10",
-      location: "강남 e스포츠 스타디움",
-      type: "대회",
-      status: "upcoming",
-      featured: true
-    },
-    {
-      id: 3,
-      title: "여름 특별 이벤트: 카드 팩 할인",
-      description: "8월 한 달간 모든 카드 팩을 30% 할인된 가격으로 만나보세요!",
-      date: "2025-08-01",
-      endDate: "2025-08-31",
-      location: "온라인",
-      type: "프로모션",
-      status: "upcoming",
-      featured: false
-    },
-    {
-      id: 4,
-      title: "커뮤니티 팬아트 콘테스트",
-      description: "로어크래프트 캐릭터를 주제로 한 팬아트 콘테스트를 개최합니다. 최우수작에게는 태블릿을 증정!",
-      date: "2025-07-15",
-      endDate: "2025-08-15",
-      location: "온라인",
-      type: "콘테스트",
-      status: "ongoing",
-      featured: false
-    },
-    {
-      id: 5,
-      title: "개발자와의 만남",
-      description: "TCG Estela 개발진과 직접 만나 이야기를 나누는 시간을 가져보세요.",
-      date: "2025-07-20",
-      endDate: "2025-07-20",
-      location: "강남 로어크래프트 사무실",
-      type: "미팅",
-      status: "completed",
-      featured: false
-    }
-  ];
+  const [eventsList, setEventsList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const upcomingEvents = eventsData.filter(event => event.status === 'upcoming');
-  const ongoingEvents = eventsData.filter(event => event.status === 'ongoing');
-  const featuredEvents = eventsData.filter(event => event.featured);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await eventService.getEventsList(currentPage, 10, false, false);
+        if (response.success) {
+          setEventsList(response.data.content);
+          setTotalPages(response.data.totalPages);
+        } else {
+          setError('이벤트를 불러올 수 없습니다.');
+        }
+      } catch (err) {
+        console.error('Events API Error:', err);
+        setError('서버 연결에 실패했습니다.');
+        // 폴백 데이터 사용
+        setEventsList([
+          {
+            id: 1,
+            title: "LORECRAFT 런칭 이벤트",
+            eventDate: "2025-09-01T14:00:00",
+            location: "서울 강남구",
+            maxParticipants: 100,
+            currentParticipants: 0,
+            published: true
+          },
+          {
+            id: 2,
+            title: "TCG 토너먼트",
+            eventDate: "2025-10-15T10:00:00",
+            location: "부산 해운대구",
+            maxParticipants: 50,
+            currentParticipants: 0,
+            published: true
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, [currentPage]);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getEventStatus = (eventDate) => {
+    const now = new Date();
+    const eventDateTime = new Date(eventDate);
+    
+    if (eventDateTime > now) {
+      return { status: 'upcoming', label: '🔜 예정' };
+    } else if (eventDateTime.toDateString() === now.toDateString()) {
+      return { status: 'ongoing', label: '🔥 진행중' };
+    } else {
+      return { status: 'completed', label: '✅ 완료' };
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="event-list-page">
+        <div className="page-container">
+          <div className="loading">이벤트를 불러오는 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && eventsList.length === 0) {
+    return (
+      <div className="event-list-page">
+        <div className="page-container">
+          <div className="error">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   const getStatusBadge = (status) => {
     switch(status) {
@@ -80,91 +112,58 @@ function EventListPage() {
           <p>로어크래프트의 다양한 이벤트와 대회에 참여하세요!</p>
         </header>
 
-        {/* 주요 이벤트 */}
-        <section className="featured-events">
-          <h2>🌟 주요 이벤트</h2>
-          <div className="featured-grid">
-            {featuredEvents.map(event => (
-              <Link 
-                key={event.id} 
-                to={`/events/${event.id}`} 
-                className="featured-event-card"
-              >
-                <div className="event-header">
-                  <span className="event-type">{event.type}</span>
-                  <span className="event-status">{getStatusBadge(event.status)}</span>
-                </div>
-                <h3>{event.title}</h3>
-                <p>{event.description}</p>
-                <div className="event-details">
-                  <div className="event-date">
-                    📅 {event.date}
-                    {event.endDate !== event.date && ` ~ ${event.endDate}`}
-                  </div>
-                  <div className="event-location">📍 {event.location}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* 진행중인 이벤트 */}
-        {ongoingEvents.length > 0 && (
-          <section className="ongoing-events">
-            <h2>🔥 진행중인 이벤트</h2>
-            <div className="event-list">
-              {ongoingEvents.map(event => (
-                <Link 
-                  key={event.id} 
-                  to={`/events/${event.id}`} 
-                  className="event-item ongoing"
-                >
-                  <div className="event-content">
-                    <div className="event-meta">
-                      <span className="event-type">{event.type}</span>
-                      <span className="event-status">{getStatusBadge(event.status)}</span>
-                    </div>
-                    <h4>{event.title}</h4>
-                    <p>{event.description}</p>
-                    <div className="event-info">
-                      <span>📅 {event.date} ~ {event.endDate}</span>
-                      <span>📍 {event.location}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* 전체 이벤트 */}
         <section className="all-events">
           <h2>📅 전체 이벤트</h2>
+          {error && <div className="error-banner">⚠️ {error}</div>}
           <div className="event-list">
-            {eventsData.map(event => (
-              <Link 
-                key={event.id} 
-                to={`/events/${event.id}`} 
-                className={`event-item ${event.status}`}
-              >
-                <div className="event-content">
-                  <div className="event-meta">
-                    <span className="event-type">{event.type}</span>
-                    <span className="event-status">{getStatusBadge(event.status)}</span>
+            {eventsList.map(event => {
+              const eventStatus = getEventStatus(event.eventDate);
+              return (
+                <Link 
+                  key={event.id} 
+                  to={`/events/${event.id}`} 
+                  className={`event-item ${eventStatus.status}`}
+                >
+                  <div className="event-content">
+                    <div className="event-meta">
+                      <span className="event-status">{eventStatus.label}</span>
+                      {event.published && <span className="published-badge">Published</span>}
+                    </div>
+                    <h4>{event.title}</h4>
+                    <div className="event-info">
+                      <span>📅 {formatDate(event.eventDate)}</span>
+                      <span>📍 {event.location}</span>
+                      {event.maxParticipants && (
+                        <span>👥 {event.currentParticipants}/{event.maxParticipants}명</span>
+                      )}
+                    </div>
                   </div>
-                  <h4>{event.title}</h4>
-                  <p>{event.description}</p>
-                  <div className="event-info">
-                    <span>📅 {event.date}
-                      {event.endDate !== event.date && ` ~ ${event.endDate}`}
-                    </span>
-                    <span>📍 {event.location}</span>
-                  </div>
-                </div>
-                {event.featured && <span className="featured-badge">Featured</span>}
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
+
+          {/* 페이지네이션 */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                disabled={currentPage === 0}
+              >
+                이전
+              </button>
+              <span>
+                {currentPage + 1} / {totalPages}
+              </span>
+              <button 
+                onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                disabled={currentPage >= totalPages - 1}
+              >
+                다음
+              </button>
+            </div>
+          )}
         </section>
       </div>
     </div>

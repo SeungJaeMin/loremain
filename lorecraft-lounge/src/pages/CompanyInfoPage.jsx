@@ -1,13 +1,63 @@
+import { useState, useEffect } from 'react';
+import { companyService } from '../services/companyService';
+
 function CompanyInfoPage() {
-  const companyInfo = {
-    name: "LORECRAFT",
-    established: "2025년",
-    ceo: "홍길동",
-    address: "경기도 수원시 어딘가구 어딘가길 123",
-    business: "IP개발, TCG, 커뮤니티, 콘텐츠 플랫폼 서비스",
-    employees: "5명",
-    capital: "-"
-  };
+  const [companyInfo, setCompanyInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      try {
+        setLoading(true);
+        const response = await companyService.getCompanyInfo();
+        if (response.success) {
+          setCompanyInfo(response.data);
+        } else {
+          setError('회사 정보를 불러올 수 없습니다.');
+        }
+      } catch (err) {
+        console.error('CompanyInfo API Error:', err);
+        setError('서버 연결에 실패했습니다.');
+        // 폴백 데이터 사용
+        setCompanyInfo({
+          name: "LORECRAFT",
+          established: "2025년",
+          ceo: "홍길동",
+          address: "경기도 수원시 어딘가구 어딘가길 123",
+          business: "IP개발, TCG, 커뮤니티, 콘텐츠 플랫폼 서비스",
+          employees: "5명",
+          capital: "-"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanyInfo();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="company-info-page">
+        <div className="page-container">
+          <div className="loading">회사 정보를 불러오는 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!companyInfo) {
+    return (
+      <div className="company-info-page">
+        <div className="page-container">
+          <div className="error">
+            {error || '회사 정보를 불러올 수 없습니다.'}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="company-info-page">

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.11.0/dist/axios.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .loading { background-color: #fff3cd; color: #856404; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 API Integration Test</h1>
+    <p>프론트엔드와 백엔드 API 연동을 테스트합니다.</p>
+    
+    <div>
+        <button onclick="testCompanyAPI()">회사 정보 API 테스트</button>
+        <button onclick="testNewsAPI()">뉴스 API 테스트</button>
+        <button onclick="testEventsAPI()">이벤트 API 테스트</button>
+        <button onclick="clearResults()">결과 지우기</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+        
+        const apiClient = axios.create({
+            baseURL: API_BASE_URL,
+            timeout: 10000,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        function addResult(title, status, data) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${status}`;
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+                <small>시간: ${new Date().toLocaleString()}</small>
+            `;
+            results.appendChild(div);
+        }
+
+        async function testCompanyAPI() {
+            addResult('회사 정보 API', 'loading', { message: '요청 중...' });
+            
+            try {
+                const response = await apiClient.get('/company/info');
+                addResult('회사 정보 API - 성공', 'success', {
+                    status: response.status,
+                    data: response.data
+                });
+            } catch (error) {
+                addResult('회사 정보 API - 실패', 'error', {
+                    message: error.message,
+                    response: error.response?.data || 'No response data',
+                    status: error.response?.status || 'No status'
+                });
+            }
+        }
+
+        async function testNewsAPI() {
+            addResult('뉴스 API', 'loading', { message: '요청 중...' });
+            
+            try {
+                const response = await apiClient.get('/news?page=0&size=5');
+                addResult('뉴스 API - 성공', 'success', {
+                    status: response.status,
+                    totalElements: response.data.data?.totalElements || 0,
+                    content: response.data.data?.content || response.data
+                });
+            } catch (error) {
+                addResult('뉴스 API - 실패', 'error', {
+                    message: error.message,
+                    response: error.response?.data || 'No response data',
+                    status: error.response?.status || 'No status'
+                });
+            }
+        }
+
+        async function testEventsAPI() {
+            addResult('이벤트 API', 'loading', { message: '요청 중...' });
+            
+            try {
+                const response = await apiClient.get('/events?page=0&size=5');
+                addResult('이벤트 API - 성공', 'success', {
+                    status: response.status,
+                    totalElements: response.data.data?.totalElements || 0,
+                    content: response.data.data?.content || response.data
+                });
+            } catch (error) {
+                addResult('이벤트 API - 실패', 'error', {
+                    message: error.message,
+                    response: error.response?.data || 'No response data',
+                    status: error.response?.status || 'No status'
+                });
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // 페이지 로드 시 자동으로 모든 API 테스트
+        window.onload = function() {
+            addResult('API 테스트 시작', 'loading', { 
+                message: 'Spring Boot 서버가 실행 중이어야 합니다.',
+                server: API_BASE_URL 
+            });
+        };
+    </script>
+</body>
+</html>

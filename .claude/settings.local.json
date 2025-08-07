@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(mvn:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(java:*)",
+      "Bash(where mvn)",
+      "Bash(curl:*)",
+      "Bash(start http://localhost:5173/company/info)",
+      "Bash(start http://localhost:5173/news)"
+    ],
+    "deny": []
+  }
+}
