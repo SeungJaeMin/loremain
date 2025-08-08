@@ -1,26 +1,27 @@
 package com.lorecraft.api.service;
 
-import com.lorecraft.api.dao.CompanyDao;
-import com.lorecraft.api.dto.CompanyDto;
-import com.lorecraft.api.entity.Company;
-import com.lorecraft.api.service.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.lorecraft.api.repository.CompanyRepository;
+import com.lorecraft.api.dto.CompanyDto;
+import com.lorecraft.api.entity.EntityCompany;
+import com.lorecraft.api.service.base.BaseService;
 
 @Service
 public class CompanyService extends BaseService {
 
-    private final CompanyDao companyDao;
+    private final CompanyRepository companyRepository;
 
     @Autowired
-    public CompanyService(CompanyDao companyDao) {
-        this.companyDao = companyDao;
+    public CompanyService(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
 
     public CompanyDto.Response getCompanyInfo() {
         logServiceCall("getCompanyInfo");
         
-        Company company = companyDao.findCompanyInfo();
+        EntityCompany company = companyRepository.findFirst();
         
         if (company == null) {
             company = createDefaultCompany();
@@ -38,10 +39,10 @@ public class CompanyService extends BaseService {
         validateNotNull(request, "CompanyDto.Request");
         validateNotEmpty(request.getName(), "Company name");
         
-        Company company = companyDao.findCompanyInfo();
+        EntityCompany company = companyRepository.findFirst();
         
         if (company == null) {
-            company = new Company(
+            company = new EntityCompany(
                 request.getName(), 
                 request.getEstablished(), 
                 request.getCeo(), 
@@ -62,7 +63,7 @@ public class CompanyService extends BaseService {
             );
         }
 
-        Company savedCompany = companyDao.saveCompany(company);
+        EntityCompany savedCompany = companyRepository.save(company);
         CompanyDto.Response response = convertToResponse(savedCompany);
         
         logServiceResult("updateCompanyInfo", response);
@@ -70,8 +71,8 @@ public class CompanyService extends BaseService {
         return response;
     }
 
-    private Company createDefaultCompany() {
-        Company defaultCompany = new Company(
+    private EntityCompany createDefaultCompany() {
+        EntityCompany defaultCompany = new EntityCompany(
                 "LORECRAFT", 
                 "2025year", 
                 "Hong Gil-dong", 
@@ -80,10 +81,10 @@ public class CompanyService extends BaseService {
                 "5people", 
                 "N/A"
         );
-        return companyDao.saveCompany(defaultCompany);
+        return companyRepository.save(defaultCompany);
     }
 
-    private CompanyDto.Response convertToResponse(Company company) {
+    private CompanyDto.Response convertToResponse(EntityCompany company) {
         validateNotNull(company, "Company");
         
         return new CompanyDto.Response(

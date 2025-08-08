@@ -12,7 +12,8 @@
       "Bash(start http://localhost:5173/news)",
       "Bash(rm:*)",
       "Bash(./mvnw.cmd clean:*)",
-      "Bash(./mvnw.cmd:*)"
+      "Bash(./mvnw.cmd:*)",
+      "Bash(move:*)"
     ],
     "deny": []
   }

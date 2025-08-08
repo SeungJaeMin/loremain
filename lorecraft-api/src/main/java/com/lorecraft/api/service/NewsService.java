@@ -1,32 +1,32 @@
 package com.lorecraft.api.service;
 
-import com.lorecraft.api.dao.NewsDao;
-import com.lorecraft.api.dto.NewsDto;
-import com.lorecraft.api.entity.News;
-import com.lorecraft.api.service.base.BaseService;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.lorecraft.api.repository.NewsRepository;
+import com.lorecraft.api.dto.NewsDto;
+import com.lorecraft.api.entity.EntityNews;
+import com.lorecraft.api.service.base.BaseService;
 
 @Service
 public class NewsService extends BaseService {
 
-    private final NewsDao newsDao;
+    private final NewsRepository newsRepository;
 
     @Autowired
-    public NewsService(NewsDao newsDao) {
-        this.newsDao = newsDao;
+    public NewsService(NewsRepository newsRepository) {
+        this.newsRepository = newsRepository;
     }
 
     public Page<NewsDto.Summary> getPublishedNewsList(Pageable pageable) {
         logServiceCall("getPublishedNewsList", pageable);
         
-        List<News> newsList = newsDao.findPublishedNews();
+        List<EntityNews> newsList = newsRepository.findByPublishedTrue();
         List<NewsDto.Summary> summaryList = newsList.stream()
                 .map(this::convertToSummary)
                 .collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class NewsService extends BaseService {
     public Page<NewsDto.Summary> getAllNewsList(Pageable pageable) {
         logServiceCall("getAllNewsList", pageable);
         
-        List<News> newsList = newsDao.findAllNews();
+        List<EntityNews> newsList = newsRepository.findAll();
         List<NewsDto.Summary> summaryList = newsList.stream()
                 .map(this::convertToSummary)
                 .collect(Collectors.toList());
@@ -56,7 +56,7 @@ public class NewsService extends BaseService {
         
         validatePositive(id, "News ID");
         
-        News news = newsDao.findNewsById(id)
+        EntityNews news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
         
         NewsDto.Response response = convertToResponse(news);
@@ -72,8 +72,8 @@ public class NewsService extends BaseService {
         validateNotEmpty(request.getTitle(), "News title");
         validateNotEmpty(request.getContent(), "News content");
         
-        News news = new News(request.getTitle(), request.getContent(), request.getAuthor());
-        News savedNews = newsDao.saveNews(news);
+        EntityNews news = new EntityNews(request.getTitle(), request.getContent(), request.getAuthor());
+        EntityNews savedNews = newsRepository.save(news);
         
         NewsDto.Response response = convertToResponse(savedNews);
         logServiceResult("createNews", response);
@@ -89,11 +89,11 @@ public class NewsService extends BaseService {
         validateNotEmpty(request.getTitle(), "News title");
         validateNotEmpty(request.getContent(), "News content");
         
-        News news = newsDao.findNewsById(id)
+        EntityNews news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
         news.updateNews(request.getTitle(), request.getContent(), request.getAuthor());
-        News updatedNews = newsDao.saveNews(news);
+        EntityNews updatedNews = newsRepository.save(news);
         
         NewsDto.Response response = convertToResponse(updatedNews);
         logServiceResult("updateNews", response);
@@ -106,11 +106,11 @@ public class NewsService extends BaseService {
         
         validatePositive(id, "News ID");
         
-        if (!newsDao.existsById(id)) {
+        if (!newsRepository.existsById(id)) {
             throw new RuntimeException("News not found with ID: " + id);
         }
         
-        newsDao.deleteNews(id);
+        newsRepository.deleteById(id);
         logServiceResult("deleteNews", "Success");
     }
 
@@ -119,11 +119,11 @@ public class NewsService extends BaseService {
         
         validatePositive(id, "News ID");
         
-        News news = newsDao.findNewsById(id)
+        EntityNews news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
         news.publish();
-        News publishedNews = newsDao.saveNews(news);
+        EntityNews publishedNews = newsRepository.save(news);
         
         NewsDto.Response response = convertToResponse(publishedNews);
         logServiceResult("publishNews", response);
@@ -136,11 +136,11 @@ public class NewsService extends BaseService {
         
         validatePositive(id, "News ID");
         
-        News news = newsDao.findNewsById(id)
+        EntityNews news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
         news.unpublish();
-        News unpublishedNews = newsDao.saveNews(news);
+        EntityNews unpublishedNews = newsRepository.save(news);
         
         NewsDto.Response response = convertToResponse(unpublishedNews);
         logServiceResult("unpublishNews", response);
@@ -153,11 +153,11 @@ public class NewsService extends BaseService {
         
         validateNotEmpty(keyword, "Search keyword");
         
-        List<News> newsList;
+        List<EntityNews> newsList;
         if (publishedOnly) {
-            newsList = newsDao.searchPublishedNewsByTitle(keyword);
+            newsList = newsRepository.findByPublishedTrueAndTitleContainingIgnoreCase(keyword);
         } else {
-            newsList = newsDao.searchNewsByTitle(keyword);
+            newsList = newsRepository.findByTitleContainingIgnoreCase(keyword);
         }
         
         List<NewsDto.Summary> summaryList = newsList.stream()
@@ -170,7 +170,7 @@ public class NewsService extends BaseService {
         return result;
     }
 
-    private NewsDto.Response convertToResponse(News news) {
+    private NewsDto.Response convertToResponse(EntityNews news) {
         validateNotNull(news, "News");
         
         return new NewsDto.Response(
@@ -184,7 +184,7 @@ public class NewsService extends BaseService {
         );
     }
 
-    private NewsDto.Summary convertToSummary(News news) {
+    private NewsDto.Summary convertToSummary(EntityNews news) {
         validateNotNull(news, "News");
         
         return new NewsDto.Summary(

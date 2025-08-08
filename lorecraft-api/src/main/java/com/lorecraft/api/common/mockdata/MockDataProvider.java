@@ -1,22 +1,27 @@
 package com.lorecraft.api.common.mockdata;
 
-import com.lorecraft.api.entity.*;
-import org.springframework.stereotype.Component;
-
-import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.springframework.stereotype.Component;
+
+import com.lorecraft.api.entity.EntityCompany;
+import com.lorecraft.api.entity.EntityEvent;
+import com.lorecraft.api.entity.EntityNews;
+import com.lorecraft.api.entity.EntityUser;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class MockDataProvider {
     
     // Thread-safe collections for mock data
-    private final Map<Long, Company> companyData = new ConcurrentHashMap<>();
-    private final Map<Long, News> newsData = new ConcurrentHashMap<>();
-    private final Map<Long, Event> eventData = new ConcurrentHashMap<>();
-    private final Map<Long, User> userData = new ConcurrentHashMap<>();
+    private final Map<Long, EntityCompany> companyData = new ConcurrentHashMap<>();
+    private final Map<Long, EntityNews> newsData = new ConcurrentHashMap<>();
+    private final Map<Long, EntityEvent> eventData = new ConcurrentHashMap<>();
+    private final Map<Long, EntityUser> userData = new ConcurrentHashMap<>();
     
     // ID generators
     private final AtomicLong companyIdGenerator = new AtomicLong(1);
@@ -33,7 +38,7 @@ public class MockDataProvider {
     }
     
     private void initializeCompanyData() {
-        Company company = createCompany(
+        EntityCompany company = createCompany(
             "LORECRAFT",
             "2025year", 
             "Hong Gil-dong",
@@ -108,28 +113,28 @@ public class MockDataProvider {
             "admin",
             "$2a$10$encoded.password.hash",
             "admin@lorecraft.com",
-            User.Role.ADMIN
+            EntityUser.Role.ADMIN
         ));
         
         userData.put(2L, createUser(
             "user",
             "$2a$10$encoded.password.hash",
             "user@lorecraft.com",
-            User.Role.USER
+            EntityUser.Role.USER
         ));
     }
     
     // Factory methods
-    private Company createCompany(String name, String established, String ceo, 
+    private EntityCompany createCompany(String name, String established, String ceo, 
                                  String address, String business, String employees, String capital) {
-        Company company = new Company(name, established, ceo, address, business, employees, capital);
+        EntityCompany company = new EntityCompany(name, established, ceo, address, business, employees, capital);
         setEntityId(company, companyIdGenerator.getAndIncrement());
         setEntityTimestamps(company);
         return company;
     }
     
-    private News createNews(String title, String content, String author, boolean published) {
-        News news = new News(title, content, author);
+    private EntityNews createNews(String title, String content, String author, boolean published) {
+        EntityNews news = new EntityNews(title, content, author);
         setEntityId(news, newsIdGenerator.getAndIncrement());
         setEntityTimestamps(news);
         if (published) {
@@ -138,10 +143,10 @@ public class MockDataProvider {
         return news;
     }
     
-    private Event createEvent(String title, String content, LocalDateTime eventDate, 
+    private EntityEvent createEvent(String title, String content, LocalDateTime eventDate, 
                              String location, Integer maxParticipants, Integer currentParticipants,
                              boolean registrationRequired, boolean published) {
-        Event event = new Event(title, content, eventDate, location, maxParticipants, registrationRequired);
+        EntityEvent event = new EntityEvent(title, content, eventDate, location, maxParticipants, registrationRequired);
         setEntityId(event, eventIdGenerator.getAndIncrement());
         setEntityTimestamps(event);
         if (published) {
@@ -150,8 +155,8 @@ public class MockDataProvider {
         return event;
     }
     
-    private User createUser(String username, String password, String email, User.Role role) {
-        User user = new User(username, password, email, role);
+    private EntityUser createUser(String username, String password, String email, EntityUser.Role role) {
+        EntityUser user = new EntityUser(username, password, email, role);
         setEntityId(user, userIdGenerator.getAndIncrement());
         setEntityTimestamps(user);
         return user;
@@ -185,19 +190,19 @@ public class MockDataProvider {
     }
     
     // Getter methods for DAO implementations
-    public Map<Long, Company> getCompanyData() {
+    public Map<Long, EntityCompany> getCompanyData() {
         return new ConcurrentHashMap<>(companyData);
     }
     
-    public Map<Long, News> getNewsData() {
+    public Map<Long, EntityNews> getNewsData() {
         return new ConcurrentHashMap<>(newsData);
     }
     
-    public Map<Long, Event> getEventData() {
+    public Map<Long, EntityEvent> getEventData() {
         return new ConcurrentHashMap<>(eventData);
     }
     
-    public Map<Long, User> getUserData() {
+    public Map<Long, EntityUser> getUserData() {
         return new ConcurrentHashMap<>(userData);
     }
     

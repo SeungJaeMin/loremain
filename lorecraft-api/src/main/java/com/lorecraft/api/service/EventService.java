@@ -1,32 +1,33 @@
 package com.lorecraft.api.service;
 
-import com.lorecraft.api.dao.EventDao;
-import com.lorecraft.api.dto.EventDto;
-import com.lorecraft.api.entity.Event;
-import com.lorecraft.api.service.base.BaseService;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.lorecraft.api.repository.EventRepository;
+import com.lorecraft.api.dto.EventDto;
+import com.lorecraft.api.entity.EntityEvent;
+import com.lorecraft.api.service.base.BaseService;
 
 @Service
 public class EventService extends BaseService {
 
-    private final EventDao eventDao;
+    private final EventRepository eventRepository;
 
     @Autowired
-    public EventService(EventDao eventDao) {
-        this.eventDao = eventDao;
+    public EventService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
     }
 
     public Page<EventDto.Summary> getPublishedEventsList(Pageable pageable) {
         logServiceCall("getPublishedEventsList", pageable);
         
-        List<Event> eventList = eventDao.findPublishedEvents();
+        List<EntityEvent> eventList = eventRepository.findByPublishedTrue();
         List<EventDto.Summary> summaryList = eventList.stream()
                 .map(this::convertToSummary)
                 .collect(Collectors.toList());
@@ -40,7 +41,7 @@ public class EventService extends BaseService {
     public Page<EventDto.Summary> getAllEventsList(Pageable pageable) {
         logServiceCall("getAllEventsList", pageable);
         
-        List<Event> eventList = eventDao.findAllEvents();
+        List<EntityEvent> eventList = eventRepository.findAll();
         List<EventDto.Summary> summaryList = eventList.stream()
                 .map(this::convertToSummary)
                 .collect(Collectors.toList());
@@ -55,7 +56,7 @@ public class EventService extends BaseService {
         logServiceCall("getUpcomingEvents", pageable);
         
         LocalDateTime now = LocalDateTime.now();
-        List<Event> eventList = eventDao.findUpcomingEvents(now);
+        List<EntityEvent> eventList = eventRepository.findByEventDateAfter(now);
         List<EventDto.Summary> summaryList = eventList.stream()
                 .map(this::convertToSummary)
                 .collect(Collectors.toList());
@@ -71,7 +72,7 @@ public class EventService extends BaseService {
         
         validatePositive(id, "Event ID");
         
-        Event event = eventDao.findEventById(id)
+        EntityEvent event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
         
         EventDto.Response response = convertToResponse(event);
@@ -88,7 +89,7 @@ public class EventService extends BaseService {
         validateNotEmpty(request.getContent(), "Event content");
         validateNotNull(request.getEventDate(), "Event date");
         
-        Event event = new Event(
+        EntityEvent event = new EntityEvent(
                 request.getTitle(),
                 request.getContent(),
                 request.getEventDate(),
@@ -96,7 +97,7 @@ public class EventService extends BaseService {
                 request.getMaxParticipants(),
                 request.isRegistrationRequired()
         );
-        Event savedEvent = eventDao.saveEvent(event);
+        EntityEvent savedEvent = eventRepository.save(event);
         
         EventDto.Response response = convertToResponse(savedEvent);
         logServiceResult("createEvent", response);
@@ -113,7 +114,7 @@ public class EventService extends BaseService {
         validateNotEmpty(request.getContent(), "Event content");
         validateNotNull(request.getEventDate(), "Event date");
         
-        Event event = eventDao.findEventById(id)
+        EntityEvent event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.updateEvent(
@@ -124,7 +125,7 @@ public class EventService extends BaseService {
                 request.getMaxParticipants(),
                 request.isRegistrationRequired()
         );
-        Event updatedEvent = eventDao.saveEvent(event);
+        EntityEvent updatedEvent = eventRepository.save(event);
         
         EventDto.Response response = convertToResponse(updatedEvent);
         logServiceResult("updateEvent", response);
@@ -137,11 +138,11 @@ public class EventService extends BaseService {
         
         validatePositive(id, "Event ID");
         
-        if (!eventDao.existsById(id)) {
+        if (!eventRepository.existsById(id)) {
             throw new RuntimeException("Event not found with ID: " + id);
         }
         
-        eventDao.deleteEvent(id);
+        eventRepository.deleteById(id);
         logServiceResult("deleteEvent", "Success");
     }
 
@@ -150,11 +151,11 @@ public class EventService extends BaseService {
         
         validatePositive(id, "Event ID");
         
-        Event event = eventDao.findEventById(id)
+        EntityEvent event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.publish();
-        Event publishedEvent = eventDao.saveEvent(event);
+        EntityEvent publishedEvent = eventRepository.save(event);
         
         EventDto.Response response = convertToResponse(publishedEvent);
         logServiceResult("publishEvent", response);
@@ -167,11 +168,11 @@ public class EventService extends BaseService {
         
         validatePositive(id, "Event ID");
         
-        Event event = eventDao.findEventById(id)
+        EntityEvent event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.unpublish();
-        Event unpublishedEvent = eventDao.saveEvent(event);
+        EntityEvent unpublishedEvent = eventRepository.save(event);
         
         EventDto.Response response = convertToResponse(unpublishedEvent);
         logServiceResult("unpublishEvent", response);
@@ -184,7 +185,7 @@ public class EventService extends BaseService {
         
         validatePositive(id, "Event ID");
         
-        Event event = eventDao.findEventById(id)
+        EntityEvent event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         if (!event.canRegister()) {
@@ -192,7 +193,7 @@ public class EventService extends BaseService {
         }
 
         event.addParticipant();
-        Event updatedEvent = eventDao.saveEvent(event);
+        EntityEvent updatedEvent = eventRepository.save(event);
         
         EventDto.Response response = convertToResponse(updatedEvent);
         logServiceResult("registerForEvent", response);
@@ -205,11 +206,11 @@ public class EventService extends BaseService {
         
         validatePositive(id, "Event ID");
         
-        Event event = eventDao.findEventById(id)
+        EntityEvent event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.removeParticipant();
-        Event updatedEvent = eventDao.saveEvent(event);
+        EntityEvent updatedEvent = eventRepository.save(event);
         
         EventDto.Response response = convertToResponse(updatedEvent);
         logServiceResult("cancelRegistration", response);
@@ -222,11 +223,11 @@ public class EventService extends BaseService {
         
         validateNotEmpty(keyword, "Search keyword");
         
-        List<Event> eventList;
+        List<EntityEvent> eventList;
         if (publishedOnly) {
-            eventList = eventDao.searchPublishedEventsByTitle(keyword);
+            eventList = eventRepository.findByPublishedTrueAndTitleContainingIgnoreCase(keyword);
         } else {
-            eventList = eventDao.searchEventsByTitle(keyword);
+            eventList = eventRepository.findByTitleContainingIgnoreCase(keyword);
         }
         
         List<EventDto.Summary> summaryList = eventList.stream()
@@ -239,7 +240,7 @@ public class EventService extends BaseService {
         return result;
     }
 
-    private EventDto.Response convertToResponse(Event event) {
+    private EventDto.Response convertToResponse(EntityEvent event) {
         validateNotNull(event, "Event");
         
         return new EventDto.Response(
@@ -257,7 +258,7 @@ public class EventService extends BaseService {
         );
     }
 
-    private EventDto.Summary convertToSummary(Event event) {
+    private EventDto.Summary convertToSummary(EntityEvent event) {
         validateNotNull(event, "Event");
         
         return new EventDto.Summary(
