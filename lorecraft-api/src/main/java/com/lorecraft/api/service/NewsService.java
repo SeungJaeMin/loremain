@@ -1,97 +1,178 @@
 package com.lorecraft.api.service;
 
+import com.lorecraft.api.dao.NewsDao;
 import com.lorecraft.api.dto.NewsDto;
 import com.lorecraft.api.entity.News;
-import com.lorecraft.api.repository.NewsRepository;
+import com.lorecraft.api.service.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class NewsService {
+public class NewsService extends BaseService {
 
-    private final NewsRepository newsRepository;
+    private final NewsDao newsDao;
 
     @Autowired
-    public NewsService(NewsRepository newsRepository) {
-        this.newsRepository = newsRepository;
+    public NewsService(NewsDao newsDao) {
+        this.newsDao = newsDao;
     }
 
-    @Transactional(readOnly = true)
     public Page<NewsDto.Summary> getPublishedNewsList(Pageable pageable) {
-        Page<News> newsPage = newsRepository.findByPublishedTrue(pageable);
-        return newsPage.map(this::convertToSummary);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<NewsDto.Summary> getAllNewsList(Pageable pageable) {
-        Page<News> newsPage = newsRepository.findAllOrderByCreatedAtDesc(pageable);
-        return newsPage.map(this::convertToSummary);
-    }
-
-    @Transactional(readOnly = true)
-    public NewsDto.Response getNewsDetail(Long id) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("뉴스를 찾을 수 없습니다."));
+        logServiceCall("getPublishedNewsList", pageable);
         
-        return convertToResponse(news);
+        List<News> newsList = newsDao.findPublishedNews();
+        List<NewsDto.Summary> summaryList = newsList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<NewsDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("getPublishedNewsList", result);
+        
+        return result;
+    }
+
+    public Page<NewsDto.Summary> getAllNewsList(Pageable pageable) {
+        logServiceCall("getAllNewsList", pageable);
+        
+        List<News> newsList = newsDao.findAllNews();
+        List<NewsDto.Summary> summaryList = newsList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<NewsDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("getAllNewsList", result);
+        
+        return result;
+    }
+
+    public NewsDto.Response getNewsDetail(Long id) {
+        logServiceCall("getNewsDetail", id);
+        
+        validatePositive(id, "News ID");
+        
+        News news = newsDao.findNewsById(id)
+                .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
+        
+        NewsDto.Response response = convertToResponse(news);
+        logServiceResult("getNewsDetail", response);
+        
+        return response;
     }
 
     public NewsDto.Response createNews(NewsDto.Request request) {
+        logServiceCall("createNews", request);
+        
+        validateNotNull(request, "NewsDto.Request");
+        validateNotEmpty(request.getTitle(), "News title");
+        validateNotEmpty(request.getContent(), "News content");
+        
         News news = new News(request.getTitle(), request.getContent(), request.getAuthor());
-        News savedNews = newsRepository.save(news);
-        return convertToResponse(savedNews);
+        News savedNews = newsDao.saveNews(news);
+        
+        NewsDto.Response response = convertToResponse(savedNews);
+        logServiceResult("createNews", response);
+        
+        return response;
     }
 
     public NewsDto.Response updateNews(Long id, NewsDto.Request request) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("뉴스를 찾을 수 없습니다."));
+        logServiceCall("updateNews", id, request);
+        
+        validatePositive(id, "News ID");
+        validateNotNull(request, "NewsDto.Request");
+        validateNotEmpty(request.getTitle(), "News title");
+        validateNotEmpty(request.getContent(), "News content");
+        
+        News news = newsDao.findNewsById(id)
+                .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
         news.updateNews(request.getTitle(), request.getContent(), request.getAuthor());
-        News updatedNews = newsRepository.save(news);
-        return convertToResponse(updatedNews);
+        News updatedNews = newsDao.saveNews(news);
+        
+        NewsDto.Response response = convertToResponse(updatedNews);
+        logServiceResult("updateNews", response);
+        
+        return response;
     }
 
     public void deleteNews(Long id) {
-        if (!newsRepository.existsById(id)) {
-            throw new RuntimeException("뉴스를 찾을 수 없습니다.");
+        logServiceCall("deleteNews", id);
+        
+        validatePositive(id, "News ID");
+        
+        if (!newsDao.existsById(id)) {
+            throw new RuntimeException("News not found with ID: " + id);
         }
-        newsRepository.deleteById(id);
+        
+        newsDao.deleteNews(id);
+        logServiceResult("deleteNews", "Success");
     }
 
     public NewsDto.Response publishNews(Long id) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("뉴스를 찾을 수 없습니다."));
+        logServiceCall("publishNews", id);
+        
+        validatePositive(id, "News ID");
+        
+        News news = newsDao.findNewsById(id)
+                .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
         news.publish();
-        News publishedNews = newsRepository.save(news);
-        return convertToResponse(publishedNews);
+        News publishedNews = newsDao.saveNews(news);
+        
+        NewsDto.Response response = convertToResponse(publishedNews);
+        logServiceResult("publishNews", response);
+        
+        return response;
     }
 
     public NewsDto.Response unpublishNews(Long id) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("뉴스를 찾을 수 없습니다."));
+        logServiceCall("unpublishNews", id);
+        
+        validatePositive(id, "News ID");
+        
+        News news = newsDao.findNewsById(id)
+                .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
         news.unpublish();
-        News unpublishedNews = newsRepository.save(news);
-        return convertToResponse(unpublishedNews);
+        News unpublishedNews = newsDao.saveNews(news);
+        
+        NewsDto.Response response = convertToResponse(unpublishedNews);
+        logServiceResult("unpublishNews", response);
+        
+        return response;
     }
 
-    @Transactional(readOnly = true)
     public Page<NewsDto.Summary> searchNews(String keyword, boolean publishedOnly, Pageable pageable) {
-        Page<News> newsPage;
+        logServiceCall("searchNews", keyword, publishedOnly, pageable);
+        
+        validateNotEmpty(keyword, "Search keyword");
+        
+        List<News> newsList;
         if (publishedOnly) {
-            newsPage = newsRepository.findByTitleContainingIgnoreCaseAndPublishedTrue(keyword, pageable);
+            newsList = newsDao.searchPublishedNewsByTitle(keyword);
         } else {
-            newsPage = newsRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+            newsList = newsDao.searchNewsByTitle(keyword);
         }
-        return newsPage.map(this::convertToSummary);
+        
+        List<NewsDto.Summary> summaryList = newsList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<NewsDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("searchNews", result);
+        
+        return result;
     }
 
     private NewsDto.Response convertToResponse(News news) {
+        validateNotNull(news, "News");
+        
         return new NewsDto.Response(
                 news.getId(),
                 news.getTitle(),
@@ -104,6 +185,8 @@ public class NewsService {
     }
 
     private NewsDto.Summary convertToSummary(News news) {
+        validateNotNull(news, "News");
+        
         return new NewsDto.Summary(
                 news.getId(),
                 news.getTitle(),

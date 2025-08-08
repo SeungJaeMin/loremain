@@ -26,10 +26,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/events/{id}").permitAll()
                 .requestMatchers("/api/news/search").permitAll()
                 .requestMatchers("/api/events/search").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
-            )
-            .headers(headers -> headers.frameOptions().sameOrigin());
+            );
 
         return http.build();
     }

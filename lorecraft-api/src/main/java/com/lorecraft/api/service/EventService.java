@@ -1,55 +1,93 @@
 package com.lorecraft.api.service;
 
+import com.lorecraft.api.dao.EventDao;
 import com.lorecraft.api.dto.EventDto;
 import com.lorecraft.api.entity.Event;
-import com.lorecraft.api.repository.EventRepository;
+import com.lorecraft.api.service.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class EventService {
+public class EventService extends BaseService {
 
-    private final EventRepository eventRepository;
+    private final EventDao eventDao;
 
     @Autowired
-    public EventService(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
+    public EventService(EventDao eventDao) {
+        this.eventDao = eventDao;
     }
 
-    @Transactional(readOnly = true)
     public Page<EventDto.Summary> getPublishedEventsList(Pageable pageable) {
-        Page<Event> eventPage = eventRepository.findPublishedEventsOrderByEventDate(pageable);
-        return eventPage.map(this::convertToSummary);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<EventDto.Summary> getAllEventsList(Pageable pageable) {
-        Page<Event> eventPage = eventRepository.findAll(pageable);
-        return eventPage.map(this::convertToSummary);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<EventDto.Summary> getUpcomingEvents(Pageable pageable) {
-        LocalDateTime now = LocalDateTime.now();
-        Page<Event> eventPage = eventRepository.findByEventDateAfterAndPublishedTrue(now, pageable);
-        return eventPage.map(this::convertToSummary);
-    }
-
-    @Transactional(readOnly = true)
-    public EventDto.Response getEventDetail(Long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("이벤트를 찾을 수 없습니다."));
+        logServiceCall("getPublishedEventsList", pageable);
         
-        return convertToResponse(event);
+        List<Event> eventList = eventDao.findPublishedEvents();
+        List<EventDto.Summary> summaryList = eventList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<EventDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("getPublishedEventsList", result);
+        
+        return result;
+    }
+
+    public Page<EventDto.Summary> getAllEventsList(Pageable pageable) {
+        logServiceCall("getAllEventsList", pageable);
+        
+        List<Event> eventList = eventDao.findAllEvents();
+        List<EventDto.Summary> summaryList = eventList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<EventDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("getAllEventsList", result);
+        
+        return result;
+    }
+
+    public Page<EventDto.Summary> getUpcomingEvents(Pageable pageable) {
+        logServiceCall("getUpcomingEvents", pageable);
+        
+        LocalDateTime now = LocalDateTime.now();
+        List<Event> eventList = eventDao.findUpcomingEvents(now);
+        List<EventDto.Summary> summaryList = eventList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<EventDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("getUpcomingEvents", result);
+        
+        return result;
+    }
+
+    public EventDto.Response getEventDetail(Long id) {
+        logServiceCall("getEventDetail", id);
+        
+        validatePositive(id, "Event ID");
+        
+        Event event = eventDao.findEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
+        
+        EventDto.Response response = convertToResponse(event);
+        logServiceResult("getEventDetail", response);
+        
+        return response;
     }
 
     public EventDto.Response createEvent(EventDto.Request request) {
+        logServiceCall("createEvent", request);
+        
+        validateNotNull(request, "EventDto.Request");
+        validateNotEmpty(request.getTitle(), "Event title");
+        validateNotEmpty(request.getContent(), "Event content");
+        validateNotNull(request.getEventDate(), "Event date");
+        
         Event event = new Event(
                 request.getTitle(),
                 request.getContent(),
@@ -58,13 +96,25 @@ public class EventService {
                 request.getMaxParticipants(),
                 request.isRegistrationRequired()
         );
-        Event savedEvent = eventRepository.save(event);
-        return convertToResponse(savedEvent);
+        Event savedEvent = eventDao.saveEvent(event);
+        
+        EventDto.Response response = convertToResponse(savedEvent);
+        logServiceResult("createEvent", response);
+        
+        return response;
     }
 
     public EventDto.Response updateEvent(Long id, EventDto.Request request) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("이벤트를 찾을 수 없습니다."));
+        logServiceCall("updateEvent", id, request);
+        
+        validatePositive(id, "Event ID");
+        validateNotNull(request, "EventDto.Request");
+        validateNotEmpty(request.getTitle(), "Event title");
+        validateNotEmpty(request.getContent(), "Event content");
+        validateNotNull(request.getEventDate(), "Event date");
+        
+        Event event = eventDao.findEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.updateEvent(
                 request.getTitle(),
@@ -74,69 +124,124 @@ public class EventService {
                 request.getMaxParticipants(),
                 request.isRegistrationRequired()
         );
-        Event updatedEvent = eventRepository.save(event);
-        return convertToResponse(updatedEvent);
+        Event updatedEvent = eventDao.saveEvent(event);
+        
+        EventDto.Response response = convertToResponse(updatedEvent);
+        logServiceResult("updateEvent", response);
+        
+        return response;
     }
 
     public void deleteEvent(Long id) {
-        if (!eventRepository.existsById(id)) {
-            throw new RuntimeException("이벤트를 찾을 수 없습니다.");
+        logServiceCall("deleteEvent", id);
+        
+        validatePositive(id, "Event ID");
+        
+        if (!eventDao.existsById(id)) {
+            throw new RuntimeException("Event not found with ID: " + id);
         }
-        eventRepository.deleteById(id);
+        
+        eventDao.deleteEvent(id);
+        logServiceResult("deleteEvent", "Success");
     }
 
     public EventDto.Response publishEvent(Long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("이벤트를 찾을 수 없습니다."));
+        logServiceCall("publishEvent", id);
+        
+        validatePositive(id, "Event ID");
+        
+        Event event = eventDao.findEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.publish();
-        Event publishedEvent = eventRepository.save(event);
-        return convertToResponse(publishedEvent);
+        Event publishedEvent = eventDao.saveEvent(event);
+        
+        EventDto.Response response = convertToResponse(publishedEvent);
+        logServiceResult("publishEvent", response);
+        
+        return response;
     }
 
     public EventDto.Response unpublishEvent(Long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("이벤트를 찾을 수 없습니다."));
+        logServiceCall("unpublishEvent", id);
+        
+        validatePositive(id, "Event ID");
+        
+        Event event = eventDao.findEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.unpublish();
-        Event unpublishedEvent = eventRepository.save(event);
-        return convertToResponse(unpublishedEvent);
+        Event unpublishedEvent = eventDao.saveEvent(event);
+        
+        EventDto.Response response = convertToResponse(unpublishedEvent);
+        logServiceResult("unpublishEvent", response);
+        
+        return response;
     }
 
     public EventDto.Response registerForEvent(Long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("이벤트를 찾을 수 없습니다."));
+        logServiceCall("registerForEvent", id);
+        
+        validatePositive(id, "Event ID");
+        
+        Event event = eventDao.findEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         if (!event.canRegister()) {
-            throw new RuntimeException("이벤트 참가 신청이 마감되었습니다.");
+            throw new RuntimeException("Event registration is closed or full");
         }
 
         event.addParticipant();
-        Event updatedEvent = eventRepository.save(event);
-        return convertToResponse(updatedEvent);
+        Event updatedEvent = eventDao.saveEvent(event);
+        
+        EventDto.Response response = convertToResponse(updatedEvent);
+        logServiceResult("registerForEvent", response);
+        
+        return response;
     }
 
     public EventDto.Response cancelRegistration(Long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("이벤트를 찾을 수 없습니다."));
+        logServiceCall("cancelRegistration", id);
+        
+        validatePositive(id, "Event ID");
+        
+        Event event = eventDao.findEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
 
         event.removeParticipant();
-        Event updatedEvent = eventRepository.save(event);
-        return convertToResponse(updatedEvent);
+        Event updatedEvent = eventDao.saveEvent(event);
+        
+        EventDto.Response response = convertToResponse(updatedEvent);
+        logServiceResult("cancelRegistration", response);
+        
+        return response;
     }
 
-    @Transactional(readOnly = true)
     public Page<EventDto.Summary> searchEvents(String keyword, boolean publishedOnly, Pageable pageable) {
-        Page<Event> eventPage;
+        logServiceCall("searchEvents", keyword, publishedOnly, pageable);
+        
+        validateNotEmpty(keyword, "Search keyword");
+        
+        List<Event> eventList;
         if (publishedOnly) {
-            eventPage = eventRepository.findByTitleContainingIgnoreCaseAndPublishedTrue(keyword, pageable);
+            eventList = eventDao.searchPublishedEventsByTitle(keyword);
         } else {
-            eventPage = eventRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+            eventList = eventDao.searchEventsByTitle(keyword);
         }
-        return eventPage.map(this::convertToSummary);
+        
+        List<EventDto.Summary> summaryList = eventList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        Page<EventDto.Summary> result = createPageFromList(summaryList, pageable);
+        logServiceResult("searchEvents", result);
+        
+        return result;
     }
 
     private EventDto.Response convertToResponse(Event event) {
+        validateNotNull(event, "Event");
+        
         return new EventDto.Response(
                 event.getId(),
                 event.getTitle(),
@@ -153,6 +258,8 @@ public class EventService {
     }
 
     private EventDto.Summary convertToSummary(Event event) {
+        validateNotNull(event, "Event");
+        
         return new EventDto.Summary(
                 event.getId(),
                 event.getTitle(),
