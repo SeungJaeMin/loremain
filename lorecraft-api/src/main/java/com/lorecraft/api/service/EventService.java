@@ -254,7 +254,11 @@ public class EventService extends BaseService {
                 event.isRegistrationRequired(),
                 event.isPublished(),
                 event.getCreatedAt(),
-                event.getUpdatedAt()
+                event.getUpdatedAt(),
+                event.getImageUrls(),
+                event.getCategory(),
+                event.getTags(),
+                event.getHeroImage()
         );
     }
 
@@ -268,7 +272,9 @@ public class EventService extends BaseService {
                 event.getLocation(),
                 event.getMaxParticipants(),
                 event.getCurrentParticipants(),
-                event.isPublished()
+                event.isPublished(),
+                event.getCategory(),
+                event.getHeroImage()
         );
     }
 }

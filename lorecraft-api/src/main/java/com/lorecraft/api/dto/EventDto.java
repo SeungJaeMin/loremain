@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class EventDto {
 
@@ -50,6 +51,10 @@ public class EventDto {
         private boolean published;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private List<String> imageUrls;
+        private String category;
+        private List<String> tags;
+        private String heroImage;
 
         public Response(Long id, String title, String content, LocalDateTime eventDate,
                         String location, Integer maxParticipants, Integer currentParticipants,
@@ -68,6 +73,28 @@ public class EventDto {
             this.updatedAt = updatedAt;
         }
 
+        public Response(Long id, String title, String content, LocalDateTime eventDate,
+                       String location, Integer maxParticipants, Integer currentParticipants,
+                       boolean registrationRequired, boolean published,
+                       LocalDateTime createdAt, LocalDateTime updatedAt,
+                       List<String> imageUrls, String category, List<String> tags, String heroImage) {
+            this.id = id;
+            this.title = title;
+            this.content = content;
+            this.eventDate = eventDate;
+            this.location = location;
+            this.maxParticipants = maxParticipants;
+            this.currentParticipants = currentParticipants;
+            this.registrationRequired = registrationRequired;
+            this.published = published;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.imageUrls = imageUrls;
+            this.category = category;
+            this.tags = tags;
+            this.heroImage = heroImage;
+        }
+
         public Long getId() { return id; }
         public String getTitle() { return title; }
         public String getContent() { return content; }
@@ -79,6 +106,10 @@ public class EventDto {
         public boolean isPublished() { return published; }
         public LocalDateTime getCreatedAt() { return createdAt; }
         public LocalDateTime getUpdatedAt() { return updatedAt; }
+        public List<String> getImageUrls() { return imageUrls; }
+        public String getCategory() { return category; }
+        public List<String> getTags() { return tags; }
+        public String getHeroImage() { return heroImage; }
     }
 
     public static class Summary {
@@ -89,6 +120,8 @@ public class EventDto {
         private Integer maxParticipants;
         private Integer currentParticipants;
         private boolean published;
+        private String category;
+        private String heroImage;
 
         public Summary(Long id, String title, LocalDateTime eventDate, String location,
                        Integer maxParticipants, Integer currentParticipants, boolean published) {
@@ -101,6 +134,20 @@ public class EventDto {
             this.published = published;
         }
 
+        public Summary(Long id, String title, LocalDateTime eventDate, String location,
+                      Integer maxParticipants, Integer currentParticipants, boolean published,
+                      String category, String heroImage) {
+            this.id = id;
+            this.title = title;
+            this.eventDate = eventDate;
+            this.location = location;
+            this.maxParticipants = maxParticipants;
+            this.currentParticipants = currentParticipants;
+            this.published = published;
+            this.category = category;
+            this.heroImage = heroImage;
+        }
+
         public Long getId() { return id; }
         public String getTitle() { return title; }
         public LocalDateTime getEventDate() { return eventDate; }
@@ -108,5 +155,7 @@ public class EventDto {
         public Integer getMaxParticipants() { return maxParticipants; }
         public Integer getCurrentParticipants() { return currentParticipants; }
         public boolean isPublished() { return published; }
+        public String getCategory() { return category; }
+        public String getHeroImage() { return heroImage; }
     }
 }

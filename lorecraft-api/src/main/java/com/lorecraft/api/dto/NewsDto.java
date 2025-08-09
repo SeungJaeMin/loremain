@@ -3,6 +3,7 @@ package com.lorecraft.api.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class NewsDto {
 
@@ -33,6 +34,10 @@ public class NewsDto {
         private boolean published;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private List<String> imageUrls;
+        private String category;
+        private List<String> tags;
+        private String heroImage;
 
         public Response(Long id, String title, String content, String author, 
                         boolean published, LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -45,6 +50,22 @@ public class NewsDto {
             this.updatedAt = updatedAt;
         }
 
+        public Response(Long id, String title, String content, String author,
+                       boolean published, LocalDateTime createdAt, LocalDateTime updatedAt,
+                       List<String> imageUrls, String category, List<String> tags, String heroImage) {
+            this.id = id;
+            this.title = title;
+            this.content = content;
+            this.author = author;
+            this.published = published;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.imageUrls = imageUrls;
+            this.category = category;
+            this.tags = tags;
+            this.heroImage = heroImage;
+        }
+
         public Long getId() { return id; }
         public String getTitle() { return title; }
         public String getContent() { return content; }
@@ -52,6 +73,10 @@ public class NewsDto {
         public boolean isPublished() { return published; }
         public LocalDateTime getCreatedAt() { return createdAt; }
         public LocalDateTime getUpdatedAt() { return updatedAt; }
+        public List<String> getImageUrls() { return imageUrls; }
+        public String getCategory() { return category; }
+        public List<String> getTags() { return tags; }
+        public String getHeroImage() { return heroImage; }
     }
 
     public static class Summary {
@@ -60,6 +85,8 @@ public class NewsDto {
         private String author;
         private boolean published;
         private LocalDateTime createdAt;
+        private String category;
+        private String heroImage;
 
         public Summary(Long id, String title, String author, boolean published, LocalDateTime createdAt) {
             this.id = id;
@@ -69,10 +96,23 @@ public class NewsDto {
             this.createdAt = createdAt;
         }
 
+        public Summary(Long id, String title, String author, boolean published, 
+                      LocalDateTime createdAt, String category, String heroImage) {
+            this.id = id;
+            this.title = title;
+            this.author = author;
+            this.published = published;
+            this.createdAt = createdAt;
+            this.category = category;
+            this.heroImage = heroImage;
+        }
+
         public Long getId() { return id; }
         public String getTitle() { return title; }
         public String getAuthor() { return author; }
         public boolean isPublished() { return published; }
         public LocalDateTime getCreatedAt() { return createdAt; }
+        public String getCategory() { return category; }
+        public String getHeroImage() { return heroImage; }
     }
 }

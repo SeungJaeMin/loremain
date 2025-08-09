@@ -1,8 +1,11 @@
 package com.lorecraft.api.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,6 +46,18 @@ public class EntityEvent extends EntityBase {
     @Column(name = "published", nullable = false)
     private boolean published = false;
 
+    @ElementCollection
+    private List<String> imageUrls = new ArrayList<>();
+
+    @Column(name = "category", length = 50)
+    private String category;
+
+    @ElementCollection
+    private List<String> tags = new ArrayList<>();
+
+    @Column(name = "hero_image", length = 500)
+    private String heroImage;
+
     protected EntityEvent() {}
 
     public EntityEvent(String title, String content, LocalDateTime eventDate, String location, 
@@ -53,6 +68,23 @@ public class EntityEvent extends EntityBase {
         this.location = location;
         this.maxParticipants = maxParticipants;
         this.registrationRequired = registrationRequired;
+        this.imageUrls = new ArrayList<>();
+        this.tags = new ArrayList<>();
+    }
+
+    public EntityEvent(String title, String content, LocalDateTime eventDate, String location,
+                      Integer maxParticipants, boolean registrationRequired, List<String> imageUrls,
+                      String category, List<String> tags, String heroImage) {
+        this.title = title;
+        this.content = content;
+        this.eventDate = eventDate;
+        this.location = location;
+        this.maxParticipants = maxParticipants;
+        this.registrationRequired = registrationRequired;
+        this.imageUrls = imageUrls != null ? new ArrayList<>(imageUrls) : new ArrayList<>();
+        this.category = category;
+        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
+        this.heroImage = heroImage;
     }
 
     public Long getId() {
@@ -99,6 +131,37 @@ public class EntityEvent extends EntityBase {
         this.location = location;
         this.maxParticipants = maxParticipants;
         this.registrationRequired = registrationRequired;
+    }
+
+    public void updateEvent(String title, String content, LocalDateTime eventDate, String location,
+                           Integer maxParticipants, boolean registrationRequired, List<String> imageUrls,
+                           String category, List<String> tags, String heroImage) {
+        this.title = title;
+        this.content = content;
+        this.eventDate = eventDate;
+        this.location = location;
+        this.maxParticipants = maxParticipants;
+        this.registrationRequired = registrationRequired;
+        this.imageUrls = imageUrls != null ? new ArrayList<>(imageUrls) : new ArrayList<>();
+        this.category = category;
+        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
+        this.heroImage = heroImage;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public String getHeroImage() {
+        return heroImage;
     }
 
     public void publish() {

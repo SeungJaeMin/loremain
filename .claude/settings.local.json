@@ -13,7 +13,8 @@
       "Bash(rm:*)",
       "Bash(./mvnw.cmd clean:*)",
       "Bash(./mvnw.cmd:*)",
-      "Bash(move:*)"
+      "Bash(move:*)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   }

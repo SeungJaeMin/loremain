@@ -180,7 +180,11 @@ public class NewsService extends BaseService {
                 news.getAuthor(),
                 news.isPublished(),
                 news.getCreatedAt(),
-                news.getUpdatedAt()
+                news.getUpdatedAt(),
+                news.getImageUrls(),
+                news.getCategory(),
+                news.getTags(),
+                news.getHeroImage()
         );
     }
 
@@ -192,7 +196,9 @@ public class NewsService extends BaseService {
                 news.getTitle(),
                 news.getAuthor(),
                 news.isPublished(),
-                news.getCreatedAt()
+                news.getCreatedAt(),
+                news.getCategory(),
+                news.getHeroImage()
         );
     }
 }
