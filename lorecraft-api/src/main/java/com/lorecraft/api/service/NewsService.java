@@ -170,6 +170,62 @@ public class NewsService extends BaseService {
         return result;
     }
 
+    // Admin specific methods
+    public List<NewsDto.Summary> getAllNewsForAdmin(int page, int size) {
+        logServiceCall("getAllNewsForAdmin", page, size);
+        
+        List<EntityNews> newsList = newsRepository.findAll();
+        List<NewsDto.Summary> summaryList = newsList.stream()
+                .map(this::convertToSummary)
+                .collect(Collectors.toList());
+        
+        // Apply pagination manually
+        int start = Math.max(0, (page - 1) * size);
+        int end = Math.min(summaryList.size(), start + size);
+        
+        List<NewsDto.Summary> result = start < summaryList.size() ? 
+            summaryList.subList(start, end) : List.of();
+        
+        logServiceResult("getAllNewsForAdmin", result);
+        return result;
+    }
+
+    public NewsDto.Response getNewsById(Long id) {
+        logServiceCall("getNewsById", id);
+        
+        validatePositive(id, "News ID");
+        
+        EntityNews news = newsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
+        
+        NewsDto.Response response = convertToResponse(news);
+        logServiceResult("getNewsById", response);
+        
+        return response;
+    }
+
+    public NewsDto.Response togglePublishStatus(Long id) {
+        logServiceCall("togglePublishStatus", id);
+        
+        validatePositive(id, "News ID");
+        
+        EntityNews news = newsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
+
+        if (news.isPublished()) {
+            news.unpublish();
+        } else {
+            news.publish();
+        }
+        
+        EntityNews updatedNews = newsRepository.save(news);
+        
+        NewsDto.Response response = convertToResponse(updatedNews);
+        logServiceResult("togglePublishStatus", response);
+        
+        return response;
+    }
+
     private NewsDto.Response convertToResponse(EntityNews news) {
         validateNotNull(news, "News");
         

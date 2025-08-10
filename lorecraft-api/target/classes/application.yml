@@ -30,6 +30,10 @@ jwt:
   secret: lorecraft-jwt-secret-key-2025-very-long-secret-key
   expiration: 86400000 # 24 hours
 
+admin:
+  username: admin
+  password: admin123
+
 cors:
   allowed-origins:
     - http://localhost:5173
