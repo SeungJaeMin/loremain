@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { newsService } from '../../services/newsService';
+import { eventService } from '../../services/eventService';
 
-function AdminNewsEdit() {
+function AdminEventEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = !!id;
   
-  const [newsData, setNewsData] = useState({
+  const [eventData, setEventData] = useState({
     title: '',
     summary: '',
     content: '',
     imageUrl: '',
+    eventDate: '',
+    registrationRequired: false,
+    maxParticipants: '',
     published: false
   });
   
@@ -20,71 +23,81 @@ function AdminNewsEdit() {
 
   useEffect(() => {
     if (isEditing) {
-      fetchNewsData();
+      fetchEventData();
     }
   }, [id, isEditing]);
 
-  const fetchNewsData = async () => {
+  const fetchEventData = async () => {
     try {
       setLoading(true);
-      const response = await newsService.getNewsDetail(id);
+      const response = await eventService.getEventDetail(id);
       if (response.success) {
-        setNewsData({
-          title: response.data.title || '',
-          summary: response.data.summary || '',
-          content: response.data.content || '',
-          imageUrl: response.data.imageUrl || '',
-          published: response.data.published || false
+        const event = response.data;
+        setEventData({
+          title: event.title || '',
+          summary: event.summary || '',
+          content: event.content || '',
+          imageUrl: event.imageUrl || '',
+          eventDate: event.eventDate ? event.eventDate.substring(0, 16) : '',
+          registrationRequired: event.registrationRequired || false,
+          maxParticipants: event.maxParticipants || '',
+          published: event.published || false
         });
       }
     } catch (error) {
-      console.error('뉴스 데이터 조회 실패:', error);
-      alert('뉴스 데이터를 불러오는데 실패했습니다.');
+      console.error('이벤트 데이터 조회 실패:', error);
+      alert('이벤트 데이터를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleInputChange = (field, value) => {
-    setNewsData(prev => ({
+    setEventData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
   const handleSave = async (publish = false) => {
-    if (!newsData.title.trim()) {
+    if (!eventData.title.trim()) {
       alert('제목을 입력해주세요.');
       return;
     }
 
-    if (!newsData.content.trim()) {
+    if (!eventData.content.trim()) {
       alert('내용을 입력해주세요.');
+      return;
+    }
+
+    if (!eventData.eventDate) {
+      alert('이벤트 일자를 입력해주세요.');
       return;
     }
 
     try {
       setSaving(true);
       const dataToSave = {
-        ...newsData,
-        published: publish
+        ...eventData,
+        published: publish,
+        maxParticipants: eventData.maxParticipants ? parseInt(eventData.maxParticipants) : null
       };
 
       let response;
       if (isEditing) {
-        response = await newsService.updateNews(id, dataToSave);
+        response = await eventService.updateEvent(id, dataToSave);
       } else {
-        response = await newsService.createNews(dataToSave);
+        response = await eventService.createEvent(dataToSave);
       }
 
       if (response.success) {
-        alert(`뉴스가 ${publish ? '게시' : '저장'}되었습니다.`);
-        navigate('/admin/news');
+        alert(`이벤트가 ${publish ? '게시' : '저장'}되었습니다.`);
+        navigate('/admin/events');
       } else {
         alert('저장에 실패했습니다.');
       }
     } catch (error) {
-      console.error('뉴스 저장 실패:', error);
+      console.error('이벤트 저장 실패:', error);
       alert('저장 중 오류가 발생했습니다.');
     } finally {
       setSaving(false);
@@ -93,14 +106,14 @@ function AdminNewsEdit() {
 
   const handleCancel = () => {
     if (window.confirm('작성 중인 내용이 사라집니다. 계속하시겠습니까?')) {
-      navigate('/admin/news');
+      navigate('/admin/events');
     }
   };
 
   if (loading) {
     return (
       <div className="page">
-        <h1>📰 {isEditing ? '뉴스 수정' : '새 뉴스 작성'}</h1>
+        <h1>🎯 {isEditing ? '이벤트 수정' : '새 이벤트 작성'}</h1>
         <div className="loading">로딩 중...</div>
       </div>
     );
@@ -109,7 +122,7 @@ function AdminNewsEdit() {
   return (
     <div className="page">
       <div className="editor-header">
-        <h1>📰 {isEditing ? '뉴스 수정' : '새 뉴스 작성'}</h1>
+        <h1>🎯 {isEditing ? '이벤트 수정' : '새 이벤트 작성'}</h1>
         <div className="header-actions">
           <button onClick={handleCancel} className="btn btn-secondary">
             취소
@@ -136,18 +149,53 @@ function AdminNewsEdit() {
           <div className="form-group">
             <input
               type="text"
-              placeholder="제목을 입력하세요"
-              value={newsData.title}
+              placeholder="이벤트 제목을 입력하세요"
+              value={eventData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
               className="title-input"
             />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>이벤트 일시</label>
+              <input
+                type="datetime-local"
+                value={eventData.eventDate}
+                onChange={(e) => handleInputChange('eventDate', e.target.value)}
+                className="date-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>최대 참가자 수 (선택사항)</label>
+              <input
+                type="number"
+                placeholder="제한 없음"
+                value={eventData.maxParticipants}
+                onChange={(e) => handleInputChange('maxParticipants', e.target.value)}
+                className="number-input"
+                min="1"
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={eventData.registrationRequired}
+                onChange={(e) => handleInputChange('registrationRequired', e.target.checked)}
+              />
+              사전 등록 필요
+            </label>
           </div>
 
           <div className="form-group">
             <input
               type="text"
               placeholder="요약 (선택사항)"
-              value={newsData.summary}
+              value={eventData.summary}
               onChange={(e) => handleInputChange('summary', e.target.value)}
               className="summary-input"
             />
@@ -157,21 +205,21 @@ function AdminNewsEdit() {
             <input
               type="url"
               placeholder="이미지 URL (선택사항)"
-              value={newsData.imageUrl}
+              value={eventData.imageUrl}
               onChange={(e) => handleInputChange('imageUrl', e.target.value)}
               className="image-input"
             />
-            {newsData.imageUrl && (
+            {eventData.imageUrl && (
               <div className="image-preview">
-                <img src={newsData.imageUrl} alt="미리보기" />
+                <img src={eventData.imageUrl} alt="미리보기" />
               </div>
             )}
           </div>
 
           <div className="form-group">
             <textarea
-              placeholder="내용을 입력하세요..."
-              value={newsData.content}
+              placeholder="이벤트 내용을 입력하세요..."
+              value={eventData.content}
               onChange={(e) => handleInputChange('content', e.target.value)}
               className="content-textarea"
             />
@@ -191,17 +239,28 @@ function AdminNewsEdit() {
         <div className="preview-section">
           <h3>미리보기</h3>
           <div className="preview-content">
-            <h2 className="preview-title">{newsData.title || '제목을 입력하세요'}</h2>
-            {newsData.summary && (
-              <p className="preview-summary">{newsData.summary}</p>
+            <h2 className="preview-title">{eventData.title || '이벤트 제목을 입력하세요'}</h2>
+            <div className="preview-meta">
+              <span className="preview-date">
+                📅 {eventData.eventDate ? new Date(eventData.eventDate).toLocaleString('ko-KR') : '일시 미정'}
+              </span>
+              {eventData.registrationRequired && (
+                <span className="preview-registration">🎫 사전 등록 필요</span>
+              )}
+              {eventData.maxParticipants && (
+                <span className="preview-participants">👥 최대 {eventData.maxParticipants}명</span>
+              )}
+            </div>
+            {eventData.summary && (
+              <p className="preview-summary">{eventData.summary}</p>
             )}
-            {newsData.imageUrl && (
-              <img src={newsData.imageUrl} alt="뉴스 이미지" className="preview-image" />
+            {eventData.imageUrl && (
+              <img src={eventData.imageUrl} alt="이벤트 이미지" className="preview-image" />
             )}
             <div 
               className="preview-text"
               dangerouslySetInnerHTML={{ 
-                __html: newsData.content || '<p>내용을 입력하세요...</p>' 
+                __html: eventData.content || '<p>이벤트 내용을 입력하세요...</p>' 
               }}
             />
           </div>
@@ -241,6 +300,28 @@ function AdminNewsEdit() {
           flex-direction: column;
         }
 
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+        }
+
+        .form-group label {
+          margin-bottom: 5px;
+          font-weight: bold;
+          color: #495057;
+          font-size: 14px;
+        }
+
+        .checkbox-label {
+          flex-direction: row !important;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          margin-bottom: 0;
+          font-weight: normal !important;
+        }
+
         .title-input {
           font-size: 24px;
           font-weight: bold;
@@ -255,6 +336,8 @@ function AdminNewsEdit() {
           box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
         }
 
+        .date-input,
+        .number-input,
         .summary-input,
         .image-input {
           font-size: 14px;
@@ -264,6 +347,8 @@ function AdminNewsEdit() {
           outline: none;
         }
 
+        .date-input:focus,
+        .number-input:focus,
         .summary-input:focus,
         .image-input:focus {
           border-color: #007bff;
@@ -282,7 +367,7 @@ function AdminNewsEdit() {
 
         .content-textarea {
           flex: 1;
-          min-height: 300px;
+          min-height: 250px;
           padding: 15px;
           border: 1px solid #dee2e6;
           border-radius: 8px;
@@ -342,14 +427,34 @@ function AdminNewsEdit() {
         .preview-title {
           font-size: 24px;
           font-weight: bold;
-          margin: 0 0 10px 0;
+          margin: 0 0 15px 0;
           color: #212529;
+        }
+
+        .preview-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          margin-bottom: 15px;
+          font-size: 14px;
+          color: #6c757d;
+        }
+
+        .preview-date,
+        .preview-registration,
+        .preview-participants {
+          display: flex;
+          align-items: center;
+          gap: 5px;
         }
 
         .preview-summary {
           color: #6c757d;
           font-style: italic;
           margin-bottom: 20px;
+          padding: 10px;
+          background: #f8f9fa;
+          border-radius: 4px;
         }
 
         .preview-image {
@@ -409,4 +514,4 @@ function AdminNewsEdit() {
   );
 }
 
-export default AdminNewsEdit;
+export default AdminEventEdit;

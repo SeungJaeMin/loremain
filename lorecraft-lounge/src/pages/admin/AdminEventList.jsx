@@ -1,41 +1,41 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { newsService } from '../../services/newsService';
+import { eventService } from '../../services/eventService';
 
-function AdminNewsList() {
-  const [newsList, setNewsList] = useState([]);
+function AdminEventList() {
+  const [eventsList, setEventsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [includeUnpublished, setIncludeUnpublished] = useState(true);
 
   useEffect(() => {
-    fetchNewsList();
+    fetchEventsList();
   }, [currentPage, includeUnpublished]);
 
-  const fetchNewsList = async () => {
+  const fetchEventsList = async () => {
     try {
       setLoading(true);
-      const response = await newsService.getNewsList(currentPage, 10, includeUnpublished);
+      const response = await eventService.getEventsList(currentPage, 10, includeUnpublished);
       if (response.success) {
-        setNewsList(response.data.content);
+        setEventsList(response.data.content);
         setTotalPages(response.data.totalPages);
       }
     } catch (error) {
-      console.error('뉴스 목록 조회 실패:', error);
+      console.error('이벤트 목록 조회 실패:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id, title) => {
-    if (window.confirm(`"${title}" 뉴스를 삭제하시겠습니까?`)) {
+    if (window.confirm(`"${title}" 이벤트를 삭제하시겠습니까?`)) {
       try {
-        await newsService.deleteNews(id);
-        alert('뉴스가 삭제되었습니다.');
-        fetchNewsList();
+        await eventService.deleteEvent(id);
+        alert('이벤트가 삭제되었습니다.');
+        fetchEventsList();
       } catch (error) {
-        console.error('뉴스 삭제 실패:', error);
+        console.error('이벤트 삭제 실패:', error);
         alert('삭제 중 오류가 발생했습니다.');
       }
     }
@@ -44,13 +44,13 @@ function AdminNewsList() {
   const handlePublishToggle = async (id, isPublished) => {
     try {
       if (isPublished) {
-        await newsService.unpublishNews(id);
-        alert('뉴스 게시가 중단되었습니다.');
+        await eventService.unpublishEvent(id);
+        alert('이벤트 게시가 중단되었습니다.');
       } else {
-        await newsService.publishNews(id);
-        alert('뉴스가 게시되었습니다.');
+        await eventService.publishEvent(id);
+        alert('이벤트가 게시되었습니다.');
       }
-      fetchNewsList();
+      fetchEventsList();
     } catch (error) {
       console.error('게시 상태 변경 실패:', error);
       alert('상태 변경 중 오류가 발생했습니다.');
@@ -60,7 +60,7 @@ function AdminNewsList() {
   if (loading) {
     return (
       <div className="page">
-        <h1>📰 뉴스 관리</h1>
+        <h1>🎯 이벤트 관리</h1>
         <div className="loading">로딩 중...</div>
       </div>
     );
@@ -69,9 +69,9 @@ function AdminNewsList() {
   return (
     <div className="page">
       <div className="admin-header">
-        <h1>📰 뉴스 관리</h1>
-        <Link to="/admin/news/new" className="btn btn-primary">
-          새 뉴스 작성
+        <h1>🎯 이벤트 관리</h1>
+        <Link to="/admin/events/new" className="btn btn-primary">
+          새 이벤트 작성
         </Link>
       </div>
 
@@ -82,57 +82,59 @@ function AdminNewsList() {
             checked={includeUnpublished}
             onChange={(e) => setIncludeUnpublished(e.target.checked)}
           />
-          미게시 뉴스 포함
+          미게시 이벤트 포함
         </label>
       </div>
 
-      <div className="news-table">
+      <div className="events-table">
         <table>
           <thead>
             <tr>
               <th>제목</th>
+              <th>이벤트 일자</th>
               <th>상태</th>
               <th>작성일</th>
               <th>작업</th>
             </tr>
           </thead>
           <tbody>
-            {newsList.length === 0 ? (
+            {eventsList.length === 0 ? (
               <tr>
-                <td colSpan="4" className="no-data">등록된 뉴스가 없습니다.</td>
+                <td colSpan="5" className="no-data">등록된 이벤트가 없습니다.</td>
               </tr>
             ) : (
-              newsList.map((news) => (
-                <tr key={news.id}>
+              eventsList.map((event) => (
+                <tr key={event.id}>
                   <td className="title-cell">
-                    <Link to={`/admin/news/edit/${news.id}`} className="news-title">
-                      {news.title}
+                    <Link to={`/admin/events/edit/${event.id}`} className="event-title">
+                      {event.title}
                     </Link>
-                    {news.summary && (
-                      <div className="news-summary">{news.summary}</div>
+                    {event.summary && (
+                      <div className="event-summary">{event.summary}</div>
                     )}
                   </td>
+                  <td>{new Date(event.eventDate).toLocaleDateString('ko-KR')}</td>
                   <td>
-                    <span className={`status-badge ${news.published ? 'published' : 'draft'}`}>
-                      {news.published ? '게시됨' : '임시저장'}
+                    <span className={`status-badge ${event.published ? 'published' : 'draft'}`}>
+                      {event.published ? '게시됨' : '임시저장'}
                     </span>
                   </td>
-                  <td>{new Date(news.createdAt).toLocaleDateString('ko-KR')}</td>
+                  <td>{new Date(event.createdAt).toLocaleDateString('ko-KR')}</td>
                   <td className="actions-cell">
                     <Link 
-                      to={`/admin/news/edit/${news.id}`} 
+                      to={`/admin/events/edit/${event.id}`} 
                       className="btn btn-sm btn-secondary"
                     >
                       수정
                     </Link>
                     <button
-                      onClick={() => handlePublishToggle(news.id, news.published)}
-                      className={`btn btn-sm ${news.published ? 'btn-warning' : 'btn-success'}`}
+                      onClick={() => handlePublishToggle(event.id, event.published)}
+                      className={`btn btn-sm ${event.published ? 'btn-warning' : 'btn-success'}`}
                     >
-                      {news.published ? '게시중단' : '게시하기'}
+                      {event.published ? '게시중단' : '게시하기'}
                     </button>
                     <button
-                      onClick={() => handleDelete(news.id, news.title)}
+                      onClick={() => handleDelete(event.id, event.title)}
                       className="btn btn-sm btn-danger"
                     >
                       삭제
@@ -189,7 +191,7 @@ function AdminNewsList() {
           cursor: pointer;
         }
 
-        .news-table table {
+        .events-table table {
           width: 100%;
           border-collapse: collapse;
           background: white;
@@ -198,14 +200,14 @@ function AdminNewsList() {
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .news-table th,
-        .news-table td {
+        .events-table th,
+        .events-table td {
           padding: 12px;
           text-align: left;
           border-bottom: 1px solid #dee2e6;
         }
 
-        .news-table th {
+        .events-table th {
           background-color: #f8f9fa;
           font-weight: bold;
           color: #495057;
@@ -215,17 +217,17 @@ function AdminNewsList() {
           max-width: 300px;
         }
 
-        .news-title {
+        .event-title {
           font-weight: bold;
           color: #007bff;
           text-decoration: none;
         }
 
-        .news-title:hover {
+        .event-title:hover {
           text-decoration: underline;
         }
 
-        .news-summary {
+        .event-summary {
           font-size: 12px;
           color: #6c757d;
           margin-top: 4px;
@@ -308,4 +310,4 @@ function AdminNewsList() {
   );
 }
 
-export default AdminNewsList;
+export default AdminEventList;

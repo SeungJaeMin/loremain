@@ -14,7 +14,8 @@
       "Bash(./mvnw.cmd clean:*)",
       "Bash(./mvnw.cmd:*)",
       "Bash(move:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "WebFetch(domain:www.epicgames.com)"
     ],
     "deny": []
   }

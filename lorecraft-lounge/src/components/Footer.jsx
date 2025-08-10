@@ -1,6 +1,25 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 function Footer() {
+  const [showAdminLogin, setShowAdminLogin] = useState(false)
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' })
+  const [loginError, setLoginError] = useState('')
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault()
+    try {
+      // TODO: 실제 API 호출로 변경
+      if (loginForm.username === 'admin' && loginForm.password === 'admin123') {
+        alert('관리자 로그인 성공!')
+        window.location.href = '/admin'
+      } else {
+        setLoginError('아이디 또는 비밀번호가 잘못되었습니다.')
+      }
+    } catch (error) {
+      setLoginError('로그인 중 오류가 발생했습니다.')
+    }
+  }
   const footerData = {
     company: {
       name: "LORECRAFT",
@@ -156,8 +175,122 @@ function Footer() {
             <p className="footer-disclaimer">
               본 사이트의 모든 콘텐츠는 저작권법에 의해 보호받습니다.
             </p>
+            <button 
+              className="admin-login-btn"
+              onClick={() => setShowAdminLogin(true)}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#666', 
+                fontSize: '12px', 
+                cursor: 'pointer',
+                marginTop: '10px'
+              }}
+            >
+              관리자
+            </button>
           </div>
         </div>
+
+        {/* 관리자 로그인 팝업 */}
+        {showAdminLogin && (
+          <div className="admin-login-overlay" style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}>
+            <div className="admin-login-popup" style={{
+              backgroundColor: 'white',
+              padding: '30px',
+              borderRadius: '8px',
+              width: '300px',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+            }}>
+              <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>관리자 로그인</h3>
+              <form onSubmit={handleAdminLogin}>
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px' }}>아이디</label>
+                  <input
+                    type="text"
+                    value={loginForm.username}
+                    onChange={(e) => setLoginForm({...loginForm, username: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '8px',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      boxSizing: 'border-box'
+                    }}
+                    required
+                  />
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px' }}>비밀번호</label>
+                  <input
+                    type="password"
+                    value={loginForm.password}
+                    onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '8px',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      boxSizing: 'border-box'
+                    }}
+                    required
+                  />
+                </div>
+                {loginError && (
+                  <div style={{ color: 'red', fontSize: '14px', marginBottom: '15px' }}>
+                    {loginError}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    type="submit"
+                    style={{
+                      flex: 1,
+                      padding: '10px',
+                      backgroundColor: '#007bff',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    로그인
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAdminLogin(false)
+                      setLoginError('')
+                      setLoginForm({ username: '', password: '' })
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '10px',
+                      backgroundColor: '#6c757d',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    취소
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </footer>
   )

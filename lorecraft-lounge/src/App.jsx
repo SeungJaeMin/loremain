@@ -14,6 +14,7 @@ import NewsDetailPage from './pages/NewsDetailPage'
 import EventListPage from './pages/EventListPage'
 import EventDetailPage from './pages/EventDetailPage'
 import IRBookListPage from './pages/IRBookListPage'
+import RecruitPage from './pages/RecruitPage'
 import LoginPage from './pages/LoginPage'
 
 // 관리자 페이지들
@@ -22,6 +23,8 @@ import AdminCompanyInfo from './pages/admin/AdminCompanyInfo'
 import AdminCompanyVision from './pages/admin/AdminCompanyVision'
 import AdminNewsList from './pages/admin/AdminNewsList'
 import AdminNewsEdit from './pages/admin/AdminNewsEdit'
+import AdminEventList from './pages/admin/AdminEventList'
+import AdminEventEdit from './pages/admin/AdminEventEdit'
 
 function App() {
   // 임시 인증 상태 (나중에 Firebase Auth로 교체)
@@ -45,6 +48,7 @@ function App() {
           <Route path="news/:id" element={<NewsDetailPage />} />
           <Route path="events" element={<EventListPage />} />
           <Route path="events/:id" element={<EventDetailPage />} />
+          <Route path="recruit" element={<RecruitPage />} />
           <Route path="irbook" element={<IRBookListPage />} />
           
           {/* 관리자 페이지들 */}
@@ -54,6 +58,9 @@ function App() {
           <Route path="admin/news" element={<AdminNewsList />} />
           <Route path="admin/news/new" element={<AdminNewsEdit />} />
           <Route path="admin/news/edit/:id" element={<AdminNewsEdit />} />
+          <Route path="admin/events" element={<AdminEventList />} />
+          <Route path="admin/events/new" element={<AdminEventEdit />} />
+          <Route path="admin/events/edit/:id" element={<AdminEventEdit />} />
         </Route>
       </Routes>
     </Router>
