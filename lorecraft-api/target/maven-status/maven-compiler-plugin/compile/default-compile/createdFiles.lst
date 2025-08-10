@@ -4,17 +4,14 @@ com\lorecraft\api\LoreCraftApiApplication.class
 com\lorecraft\api\dto\NewsDto$Response.class
 com\lorecraft\api\controller\AdminNewsController.class
 com\lorecraft\api\config\SecurityConfig.class
-com\lorecraft\api\repository\impl\NewsRepositoryImpl.class
 com\lorecraft\api\dto\NewsDto$Request.class
 com\lorecraft\api\repository\EventRepository.class
 com\lorecraft\api\common\mockdata\MockDataProvider.class
 com\lorecraft\api\dto\AdminDto$LoginRequest.class
 com\lorecraft\api\repository\NewsRepository.class
-com\lorecraft\api\repository\impl\EventRepositoryImpl.class
 com\lorecraft\api\dto\CompanyDto$Request.class
 com\lorecraft\api\repository\UserRepository.class
 com\lorecraft\api\util\JwtUtil.class
-com\lorecraft\api\repository\impl\UserRepositoryImpl.class
 com\lorecraft\api\service\CompanyService.class
 com\lorecraft\api\controller\AdminController.class
 com\lorecraft\api\dto\AdminDto.class
@@ -35,7 +32,6 @@ com\lorecraft\api\entity\EntityCompany.class
 com\lorecraft\api\dto\EventDto$Request.class
 com\lorecraft\api\dto\EventDto.class
 com\lorecraft\api\entity\EntityUser$Role.class
-com\lorecraft\api\repository\impl\CompanyRepositoryImpl.class
 com\lorecraft\api\controller\NewsController.class
 com\lorecraft\api\controller\CompanyController.class
 com\lorecraft\api\dto\NewsDto.class

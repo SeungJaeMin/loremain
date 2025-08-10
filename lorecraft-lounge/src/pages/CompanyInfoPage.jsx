@@ -66,8 +66,8 @@ function CompanyInfoPage() {
         <div className="hero-content">
           <h1 className="hero-title">About LORECRAFT</h1>
           <p className="hero-subtitle">
-            창의적인 콘텐츠와 혁신적인 기술로 새로운 엔터테인먼트 경험을 선사하는 
-            미래 지향적 게임 엔터테인먼트 회사입니다.
+            창의적인 콘텐츠와 혁신적인 기술로 
+            경험을 선사하는 엔터테인먼트 회사입니다.
           </p>
           <div className="hero-stats">
             <div className="stat">

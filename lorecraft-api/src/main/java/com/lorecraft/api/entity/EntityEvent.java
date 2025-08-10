@@ -14,7 +14,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "event")
+@Table(name = "entity_event")
 public class EntityEvent extends EntityBase {
 
     @Id

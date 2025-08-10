@@ -7,15 +7,12 @@ E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\AdminController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\CompanyRepository.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\config\CorsConfig.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\impl\EventRepositoryImpl.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\EventController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\NewsService.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\filter\JwtAuthenticationFilter.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\base\BaseService.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\impl\UserRepositoryImpl.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\CompanyService.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\EntityCompany.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\impl\NewsRepositoryImpl.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\NewsDto.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\NewsRepository.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\AdminCompanyController.java
@@ -30,5 +27,4 @@ E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\contro
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\NewsController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\AdminNewsController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\EntityNews.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\impl\CompanyRepositoryImpl.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\config\SecurityConfig.java
