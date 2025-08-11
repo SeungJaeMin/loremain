@@ -25,6 +25,9 @@ public class EventDto {
         private Integer maxParticipants;
         private boolean registrationRequired = false;
 
+        @Size(max = 50, message = "카테고리는 50자 이하여야 합니다")
+        private String category;
+
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
         public String getContent() { return content; }
@@ -37,6 +40,8 @@ public class EventDto {
         public void setMaxParticipants(Integer maxParticipants) { this.maxParticipants = maxParticipants; }
         public boolean isRegistrationRequired() { return registrationRequired; }
         public void setRegistrationRequired(boolean registrationRequired) { this.registrationRequired = registrationRequired; }
+        public String getCategory() { return category; }
+        public void setCategory(String category) { this.category = category; }
     }
 
     public static class Response {

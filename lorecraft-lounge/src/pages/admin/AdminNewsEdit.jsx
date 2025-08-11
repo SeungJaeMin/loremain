@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { newsService } from '../../services/newsService';
+import RichEditor from '../../components/RichEditor';
 
 function AdminNewsEdit() {
   const { id } = useParams();
@@ -9,9 +10,8 @@ function AdminNewsEdit() {
   
   const [newsData, setNewsData] = useState({
     title: '',
-    summary: '',
     content: '',
-    imageUrl: '',
+    author: '',
     published: false
   });
   
@@ -31,9 +31,8 @@ function AdminNewsEdit() {
       if (response.success) {
         setNewsData({
           title: response.data.title || '',
-          summary: response.data.summary || '',
           content: response.data.content || '',
-          imageUrl: response.data.imageUrl || '',
+          author: response.data.author || '',
           published: response.data.published || false
         });
       }
@@ -66,8 +65,10 @@ function AdminNewsEdit() {
     try {
       setSaving(true);
       const dataToSave = {
-        ...newsData,
-        published: publish
+        title: newsData.title,
+        content: newsData.content,
+        author: newsData.author || '관리자',
+        category: 'news'
       };
 
       let response;
@@ -111,111 +112,86 @@ function AdminNewsEdit() {
       <div className="editor-header">
         <h1>📰 {isEditing ? '뉴스 수정' : '새 뉴스 작성'}</h1>
         <div className="header-actions">
-          <button onClick={handleCancel} className="btn btn-secondary">
+          <button 
+            onClick={handleCancel}
+            className="btn-cancel"
+            disabled={saving}
+          >
             취소
           </button>
           <button 
-            onClick={() => handleSave(false)} 
+            onClick={() => handleSave(false)}
+            className="btn-save"
             disabled={saving}
-            className="btn btn-outline"
           >
-            임시저장
+            {saving ? '저장 중...' : '임시저장'}
           </button>
           <button 
-            onClick={() => handleSave(true)} 
+            onClick={() => handleSave(true)}
+            className="btn-publish"
             disabled={saving}
-            className="btn btn-primary"
           >
-            {saving ? '저장 중...' : '게시하기'}
+            {saving ? '게시 중...' : '게시하기'}
           </button>
         </div>
       </div>
 
       <div className="editor-container">
-        <div className="editor-form">
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="제목을 입력하세요"
-              value={newsData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              className="title-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="요약 (선택사항)"
-              value={newsData.summary}
-              onChange={(e) => handleInputChange('summary', e.target.value)}
-              className="summary-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="url"
-              placeholder="이미지 URL (선택사항)"
-              value={newsData.imageUrl}
-              onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-              className="image-input"
-            />
-            {newsData.imageUrl && (
-              <div className="image-preview">
-                <img src={newsData.imageUrl} alt="미리보기" />
-              </div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <textarea
-              placeholder="내용을 입력하세요..."
-              value={newsData.content}
-              onChange={(e) => handleInputChange('content', e.target.value)}
-              className="content-textarea"
-            />
-          </div>
-
-          <div className="editor-help">
-            <h3>작성 팁</h3>
-            <ul>
-              <li>HTML 태그를 사용할 수 있습니다 (예: &lt;br/&gt;, &lt;strong&gt;, &lt;em&gt;)</li>
-              <li>링크: &lt;a href="URL"&gt;텍스트&lt;/a&gt;</li>
-              <li>이미지: &lt;img src="URL" alt="설명" /&gt;</li>
-              <li>줄바꿈: &lt;br/&gt; 또는 &lt;p&gt;&lt;/p&gt;</li>
-            </ul>
-          </div>
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="제목을 입력하세요"
+            value={newsData.title}
+            onChange={(e) => handleInputChange('title', e.target.value)}
+            className="title-input"
+          />
         </div>
 
-        <div className="preview-section">
-          <h3>미리보기</h3>
-          <div className="preview-content">
-            <h2 className="preview-title">{newsData.title || '제목을 입력하세요'}</h2>
-            {newsData.summary && (
-              <p className="preview-summary">{newsData.summary}</p>
-            )}
-            {newsData.imageUrl && (
-              <img src={newsData.imageUrl} alt="뉴스 이미지" className="preview-image" />
-            )}
-            <div 
-              className="preview-text"
-              dangerouslySetInnerHTML={{ 
-                __html: newsData.content || '<p>내용을 입력하세요...</p>' 
-              }}
-            />
-          </div>
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="작성자 (기본: 관리자)"
+            value={newsData.author}
+            onChange={(e) => handleInputChange('author', e.target.value)}
+            className="author-input"
+          />
+        </div>
+
+        <div className="form-group">
+          <RichEditor
+            value={newsData.content}
+            onChange={(content) => handleInputChange('content', content)}
+            placeholder="내용을 입력하세요. 이미지를 드래그하거나 복사해서 붙여넣을 수 있습니다."
+          />
         </div>
       </div>
 
       <style jsx>{`
+        .page {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+          min-height: 100vh;
+          background: #f8f9fa;
+        }
+
         .editor-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 30px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid #dee2e6;
+          padding: 20px 0;
+          border-bottom: 2px solid #dee2e6;
+          background: white;
+          border-radius: 8px 8px 0 0;
+          padding: 20px 30px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .editor-header h1 {
+          margin: 0;
+          color: #212529;
+          font-size: 24px;
         }
 
         .header-actions {
@@ -223,186 +199,106 @@ function AdminNewsEdit() {
           gap: 10px;
         }
 
-        .editor-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 30px;
-          height: calc(100vh - 200px);
-        }
-
-        .editor-form {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .title-input {
-          font-size: 24px;
-          font-weight: bold;
-          padding: 15px;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          outline: none;
-        }
-
-        .title-input:focus {
-          border-color: #007bff;
-          box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-        }
-
-        .summary-input,
-        .image-input {
-          font-size: 14px;
-          padding: 10px;
-          border: 1px solid #dee2e6;
-          border-radius: 4px;
-          outline: none;
-        }
-
-        .summary-input:focus,
-        .image-input:focus {
-          border-color: #007bff;
-        }
-
-        .image-preview {
-          margin-top: 10px;
-        }
-
-        .image-preview img {
-          max-width: 100%;
-          max-height: 200px;
-          border-radius: 4px;
-          object-fit: cover;
-        }
-
-        .content-textarea {
-          flex: 1;
-          min-height: 300px;
-          padding: 15px;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          font-size: 14px;
-          line-height: 1.6;
-          resize: vertical;
-          outline: none;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .content-textarea:focus {
-          border-color: #007bff;
-          box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-        }
-
-        .editor-help {
-          background: #f8f9fa;
-          padding: 15px;
-          border-radius: 8px;
-          font-size: 12px;
-        }
-
-        .editor-help h3 {
-          margin: 0 0 10px 0;
-          font-size: 14px;
-        }
-
-        .editor-help ul {
-          margin: 0;
-          padding-left: 20px;
-        }
-
-        .editor-help li {
-          margin-bottom: 5px;
-          color: #6c757d;
-        }
-
-        .preview-section {
-          background: white;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          padding: 20px;
-          overflow-y: auto;
-        }
-
-        .preview-section h3 {
-          margin: 0 0 20px 0;
-          padding-bottom: 10px;
-          border-bottom: 1px solid #dee2e6;
-          color: #495057;
-        }
-
-        .preview-content {
-          line-height: 1.6;
-        }
-
-        .preview-title {
-          font-size: 24px;
-          font-weight: bold;
-          margin: 0 0 10px 0;
-          color: #212529;
-        }
-
-        .preview-summary {
-          color: #6c757d;
-          font-style: italic;
-          margin-bottom: 20px;
-        }
-
-        .preview-image {
-          width: 100%;
-          max-height: 300px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 20px;
-        }
-
-        .preview-text {
-          color: #495057;
-        }
-
-        .btn {
-          padding: 8px 16px;
-          border: 1px solid transparent;
-          border-radius: 4px;
+        .header-actions button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 6px;
           cursor: pointer;
+          font-weight: 500;
           font-size: 14px;
-          text-decoration: none;
-          display: inline-block;
+          transition: all 0.2s;
         }
 
-        .btn-primary {
-          background-color: #007bff;
+        .btn-cancel {
+          background: #6c757d;
           color: white;
         }
 
-        .btn-secondary {
-          background-color: #6c757d;
+        .btn-cancel:hover:not(:disabled) {
+          background: #5a6268;
+        }
+
+        .btn-save {
+          background: #17a2b8;
           color: white;
         }
 
-        .btn-outline {
-          background-color: white;
-          color: #007bff;
-          border-color: #007bff;
+        .btn-save:hover:not(:disabled) {
+          background: #138496;
         }
 
-        .btn:hover:not(:disabled) {
-          opacity: 0.9;
+        .btn-publish {
+          background: #28a745;
+          color: white;
         }
 
-        .btn:disabled {
+        .btn-publish:hover:not(:disabled) {
+          background: #218838;
+        }
+
+        .header-actions button:disabled {
           opacity: 0.6;
           cursor: not-allowed;
         }
 
+        .editor-container {
+          background: white;
+          border-radius: 0 0 8px 8px;
+          padding: 30px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+          margin-bottom: 20px;
+        }
+
+        .title-input, .author-input {
+          width: 100%;
+          padding: 15px;
+          border: 2px solid #dee2e6;
+          border-radius: 8px;
+          font-size: 16px;
+          font-family: inherit;
+          transition: border-color 0.2s;
+        }
+
+        .title-input {
+          font-size: 20px;
+          font-weight: 600;
+        }
+
+        .title-input:focus, .author-input:focus {
+          outline: none;
+          border-color: #007bff;
+          box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
         .loading {
           text-align: center;
-          padding: 40px;
+          padding: 50px;
+          font-size: 18px;
           color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+          .page {
+            padding: 10px;
+          }
+
+          .editor-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+          }
+
+          .header-actions {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .editor-container {
+            padding: 20px;
+          }
         }
       `}</style>
     </div>

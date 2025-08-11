@@ -72,7 +72,12 @@ public class NewsService extends BaseService {
         validateNotEmpty(request.getTitle(), "News title");
         validateNotEmpty(request.getContent(), "News content");
         
-        EntityNews news = new EntityNews(request.getTitle(), request.getContent(), request.getAuthor());
+        EntityNews news = new EntityNews(
+            request.getTitle(), 
+            request.getContent(), 
+            request.getAuthor(),
+            request.getCategory()
+        );
         EntityNews savedNews = newsRepository.save(news);
         
         NewsDto.Response response = convertToResponse(savedNews);
@@ -92,7 +97,12 @@ public class NewsService extends BaseService {
         EntityNews news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with ID: " + id));
 
-        news.updateNews(request.getTitle(), request.getContent(), request.getAuthor());
+        news.updateNews(
+            request.getTitle(), 
+            request.getContent(), 
+            request.getAuthor(),
+            request.getCategory()
+        );
         EntityNews updatedNews = newsRepository.save(news);
         
         NewsDto.Response response = convertToResponse(updatedNews);
@@ -237,10 +247,7 @@ public class NewsService extends BaseService {
                 news.isPublished(),
                 news.getCreatedAt(),
                 news.getUpdatedAt(),
-                news.getImageUrls(),
-                news.getCategory(),
-                news.getTags(),
-                news.getHeroImage()
+                news.getCategory()
         );
     }
 
@@ -253,8 +260,7 @@ public class NewsService extends BaseService {
                 news.getAuthor(),
                 news.isPublished(),
                 news.getCreatedAt(),
-                news.getCategory(),
-                news.getHeroImage()
+                news.getCategory()
         );
     }
 }

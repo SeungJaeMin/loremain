@@ -95,7 +95,8 @@ public class EventService extends BaseService {
                 request.getEventDate(),
                 request.getLocation(),
                 request.getMaxParticipants(),
-                request.isRegistrationRequired()
+                request.isRegistrationRequired(),
+                request.getCategory()
         );
         EntityEvent savedEvent = eventRepository.save(event);
         
@@ -123,7 +124,8 @@ public class EventService extends BaseService {
                 request.getEventDate(),
                 request.getLocation(),
                 request.getMaxParticipants(),
-                request.isRegistrationRequired()
+                request.isRegistrationRequired(),
+                request.getCategory()
         );
         EntityEvent updatedEvent = eventRepository.save(event);
         
@@ -254,11 +256,7 @@ public class EventService extends BaseService {
                 event.isRegistrationRequired(),
                 event.isPublished(),
                 event.getCreatedAt(),
-                event.getUpdatedAt(),
-                event.getImageUrls(),
-                event.getCategory(),
-                event.getTags(),
-                event.getHeroImage()
+                event.getUpdatedAt()
         );
     }
 
@@ -272,9 +270,7 @@ public class EventService extends BaseService {
                 event.getLocation(),
                 event.getMaxParticipants(),
                 event.getCurrentParticipants(),
-                event.isPublished(),
-                event.getCategory(),
-                event.getHeroImage()
+                event.isPublished()
         );
     }
 }

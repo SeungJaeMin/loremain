@@ -18,12 +18,17 @@ public class NewsDto {
         @Size(max = 50, message = "작성자는 50자 이하여야 합니다")
         private String author;
 
+        @Size(max = 50, message = "카테고리는 50자 이하여야 합니다")
+        private String category;
+
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
         public String getContent() { return content; }
         public void setContent(String content) { this.content = content; }
         public String getAuthor() { return author; }
         public void setAuthor(String author) { this.author = author; }
+        public String getCategory() { return category; }
+        public void setCategory(String category) { this.category = category; }
     }
 
     public static class Response {
@@ -34,25 +39,10 @@ public class NewsDto {
         private boolean published;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-        private List<String> imageUrls;
         private String category;
-        private List<String> tags;
-        private String heroImage;
-
-        public Response(Long id, String title, String content, String author, 
-                        boolean published, LocalDateTime createdAt, LocalDateTime updatedAt) {
-            this.id = id;
-            this.title = title;
-            this.content = content;
-            this.author = author;
-            this.published = published;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-        }
 
         public Response(Long id, String title, String content, String author,
-                       boolean published, LocalDateTime createdAt, LocalDateTime updatedAt,
-                       List<String> imageUrls, String category, List<String> tags, String heroImage) {
+                       boolean published, LocalDateTime createdAt, LocalDateTime updatedAt, String category) {
             this.id = id;
             this.title = title;
             this.content = content;
@@ -60,10 +50,7 @@ public class NewsDto {
             this.published = published;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
-            this.imageUrls = imageUrls;
             this.category = category;
-            this.tags = tags;
-            this.heroImage = heroImage;
         }
 
         public Long getId() { return id; }
@@ -73,10 +60,7 @@ public class NewsDto {
         public boolean isPublished() { return published; }
         public LocalDateTime getCreatedAt() { return createdAt; }
         public LocalDateTime getUpdatedAt() { return updatedAt; }
-        public List<String> getImageUrls() { return imageUrls; }
         public String getCategory() { return category; }
-        public List<String> getTags() { return tags; }
-        public String getHeroImage() { return heroImage; }
     }
 
     public static class Summary {
@@ -86,25 +70,15 @@ public class NewsDto {
         private boolean published;
         private LocalDateTime createdAt;
         private String category;
-        private String heroImage;
-
-        public Summary(Long id, String title, String author, boolean published, LocalDateTime createdAt) {
-            this.id = id;
-            this.title = title;
-            this.author = author;
-            this.published = published;
-            this.createdAt = createdAt;
-        }
 
         public Summary(Long id, String title, String author, boolean published, 
-                      LocalDateTime createdAt, String category, String heroImage) {
+                      LocalDateTime createdAt, String category) {
             this.id = id;
             this.title = title;
             this.author = author;
             this.published = published;
             this.createdAt = createdAt;
             this.category = category;
-            this.heroImage = heroImage;
         }
 
         public Long getId() { return id; }
@@ -113,6 +87,5 @@ public class NewsDto {
         public boolean isPublished() { return published; }
         public LocalDateTime getCreatedAt() { return createdAt; }
         public String getCategory() { return category; }
-        public String getHeroImage() { return heroImage; }
     }
 }

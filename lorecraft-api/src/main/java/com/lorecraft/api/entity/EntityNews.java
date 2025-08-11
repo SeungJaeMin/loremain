@@ -1,16 +1,12 @@
 package com.lorecraft.api.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "entity_news")
@@ -20,30 +16,21 @@ public class EntityNews extends EntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 200)
+    @Column(name = "title", nullable = false, length = 500)
     private String title;
 
     @Lob
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "author", length = 50)
+    @Column(name = "author", length = 100)
     private String author;
 
     @Column(name = "published", nullable = false)
     private boolean published = false;
 
-    @ElementCollection
-    private List<String> imageUrls = new ArrayList<>();
-
     @Column(name = "category", length = 50)
     private String category;
-
-    @ElementCollection
-    private List<String> tags = new ArrayList<>();
-
-    @Column(name = "hero_image", length = 500)
-    private String heroImage;
 
     protected EntityNews() {}
 
@@ -51,19 +38,14 @@ public class EntityNews extends EntityBase {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.imageUrls = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.category = "news";
     }
 
-    public EntityNews(String title, String content, String author, List<String> imageUrls, 
-                     String category, List<String> tags, String heroImage) {
+    public EntityNews(String title, String content, String author, String category) {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.imageUrls = imageUrls != null ? new ArrayList<>(imageUrls) : new ArrayList<>();
         this.category = category;
-        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
-        this.heroImage = heroImage;
     }
 
     public Long getId() {
@@ -92,31 +74,15 @@ public class EntityNews extends EntityBase {
         this.author = author;
     }
 
-    public void updateNews(String title, String content, String author, List<String> imageUrls,
-                          String category, List<String> tags, String heroImage) {
+    public void updateNews(String title, String content, String author, String category) {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.imageUrls = imageUrls != null ? new ArrayList<>(imageUrls) : new ArrayList<>();
         this.category = category;
-        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
-        this.heroImage = heroImage;
-    }
-
-    public List<String> getImageUrls() {
-        return imageUrls;
     }
 
     public String getCategory() {
         return category;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public String getHeroImage() {
-        return heroImage;
     }
 
     public void publish() {

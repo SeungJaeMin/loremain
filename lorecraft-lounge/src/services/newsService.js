@@ -82,5 +82,15 @@ export const newsService = {
       console.error('뉴스 게시 실패:', error);
       throw error;
     }
+  },
+
+  unpublishNews: async (id) => {
+    try {
+      const response = await apiClient.post(`/news/${id}/unpublish`);
+      return response.data;
+    } catch (error) {
+      console.error('뉴스 게시중단 실패:', error);
+      throw error;
+    }
   }
 };

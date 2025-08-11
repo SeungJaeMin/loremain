@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { eventService } from '../../services/eventService';
+import RichEditor from '../../components/RichEditor';
 
 function AdminEventEdit() {
   const { id } = useParams();
@@ -9,12 +10,11 @@ function AdminEventEdit() {
   
   const [eventData, setEventData] = useState({
     title: '',
-    summary: '',
     content: '',
-    imageUrl: '',
     eventDate: '',
-    registrationRequired: false,
+    location: '',
     maxParticipants: '',
+    registrationRequired: false,
     published: false
   });
   
@@ -32,16 +32,17 @@ function AdminEventEdit() {
       setLoading(true);
       const response = await eventService.getEventDetail(id);
       if (response.success) {
-        const event = response.data;
+        const eventDate = response.data.eventDate ? 
+          new Date(response.data.eventDate).toISOString().slice(0, 16) : '';
+        
         setEventData({
-          title: event.title || '',
-          summary: event.summary || '',
-          content: event.content || '',
-          imageUrl: event.imageUrl || '',
-          eventDate: event.eventDate ? event.eventDate.substring(0, 16) : '',
-          registrationRequired: event.registrationRequired || false,
-          maxParticipants: event.maxParticipants || '',
-          published: event.published || false
+          title: response.data.title || '',
+          content: response.data.content || '',
+          eventDate: eventDate,
+          location: response.data.location || '',
+          maxParticipants: response.data.maxParticipants || '',
+          registrationRequired: response.data.registrationRequired || false,
+          published: response.data.published || false
         });
       }
     } catch (error) {
@@ -78,9 +79,13 @@ function AdminEventEdit() {
     try {
       setSaving(true);
       const dataToSave = {
-        ...eventData,
-        published: publish,
-        maxParticipants: eventData.maxParticipants ? parseInt(eventData.maxParticipants) : null
+        title: eventData.title,
+        content: eventData.content,
+        eventDate: eventData.eventDate,
+        location: eventData.location,
+        maxParticipants: eventData.maxParticipants ? parseInt(eventData.maxParticipants) : null,
+        registrationRequired: eventData.registrationRequired || false,
+        category: 'event'
       };
 
       let response;
@@ -113,7 +118,7 @@ function AdminEventEdit() {
   if (loading) {
     return (
       <div className="page">
-        <h1>🎯 {isEditing ? '이벤트 수정' : '새 이벤트 작성'}</h1>
+        <h1>🎉 {isEditing ? '이벤트 수정' : '새 이벤트 작성'}</h1>
         <div className="loading">로딩 중...</div>
       </div>
     );
@@ -122,30 +127,34 @@ function AdminEventEdit() {
   return (
     <div className="page">
       <div className="editor-header">
-        <h1>🎯 {isEditing ? '이벤트 수정' : '새 이벤트 작성'}</h1>
+        <h1>🎉 {isEditing ? '이벤트 수정' : '새 이벤트 작성'}</h1>
         <div className="header-actions">
-          <button onClick={handleCancel} className="btn btn-secondary">
+          <button 
+            onClick={handleCancel}
+            className="btn-cancel"
+            disabled={saving}
+          >
             취소
           </button>
           <button 
-            onClick={() => handleSave(false)} 
+            onClick={() => handleSave(false)}
+            className="btn-save"
             disabled={saving}
-            className="btn btn-outline"
           >
-            임시저장
+            {saving ? '저장 중...' : '임시저장'}
           </button>
           <button 
-            onClick={() => handleSave(true)} 
+            onClick={() => handleSave(true)}
+            className="btn-publish"
             disabled={saving}
-            className="btn btn-primary"
           >
-            {saving ? '저장 중...' : '게시하기'}
+            {saving ? '게시 중...' : '게시하기'}
           </button>
         </div>
       </div>
 
       <div className="editor-container">
-        <div className="editor-form">
+        <div className="form-row">
           <div className="form-group">
             <input
               type="text"
@@ -155,126 +164,88 @@ function AdminEventEdit() {
               className="title-input"
             />
           </div>
+        </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>이벤트 일시</label>
-              <input
-                type="datetime-local"
-                value={eventData.eventDate}
-                onChange={(e) => handleInputChange('eventDate', e.target.value)}
-                className="date-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>최대 참가자 수 (선택사항)</label>
-              <input
-                type="number"
-                placeholder="제한 없음"
-                value={eventData.maxParticipants}
-                onChange={(e) => handleInputChange('maxParticipants', e.target.value)}
-                className="number-input"
-                min="1"
-              />
-            </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label>이벤트 일시</label>
+            <input
+              type="datetime-local"
+              value={eventData.eventDate}
+              onChange={(e) => handleInputChange('eventDate', e.target.value)}
+              className="datetime-input"
+            />
           </div>
+          <div className="form-group">
+            <label>장소</label>
+            <input
+              type="text"
+              placeholder="이벤트 장소 (온라인/오프라인)"
+              value={eventData.location}
+              onChange={(e) => handleInputChange('location', e.target.value)}
+              className="location-input"
+            />
+          </div>
+        </div>
 
+        <div className="form-row">
+          <div className="form-group">
+            <label>최대 참가자 수</label>
+            <input
+              type="number"
+              placeholder="제한 없음"
+              value={eventData.maxParticipants}
+              onChange={(e) => handleInputChange('maxParticipants', e.target.value)}
+              className="number-input"
+              min="1"
+            />
+          </div>
           <div className="form-group">
             <label className="checkbox-label">
               <input
                 type="checkbox"
                 checked={eventData.registrationRequired}
                 onChange={(e) => handleInputChange('registrationRequired', e.target.checked)}
+                className="checkbox-input"
               />
               사전 등록 필요
             </label>
           </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="요약 (선택사항)"
-              value={eventData.summary}
-              onChange={(e) => handleInputChange('summary', e.target.value)}
-              className="summary-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="url"
-              placeholder="이미지 URL (선택사항)"
-              value={eventData.imageUrl}
-              onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-              className="image-input"
-            />
-            {eventData.imageUrl && (
-              <div className="image-preview">
-                <img src={eventData.imageUrl} alt="미리보기" />
-              </div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <textarea
-              placeholder="이벤트 내용을 입력하세요..."
-              value={eventData.content}
-              onChange={(e) => handleInputChange('content', e.target.value)}
-              className="content-textarea"
-            />
-          </div>
-
-          <div className="editor-help">
-            <h3>작성 팁</h3>
-            <ul>
-              <li>HTML 태그를 사용할 수 있습니다 (예: &lt;br/&gt;, &lt;strong&gt;, &lt;em&gt;)</li>
-              <li>링크: &lt;a href="URL"&gt;텍스트&lt;/a&gt;</li>
-              <li>이미지: &lt;img src="URL" alt="설명" /&gt;</li>
-              <li>줄바꿈: &lt;br/&gt; 또는 &lt;p&gt;&lt;/p&gt;</li>
-            </ul>
-          </div>
         </div>
 
-        <div className="preview-section">
-          <h3>미리보기</h3>
-          <div className="preview-content">
-            <h2 className="preview-title">{eventData.title || '이벤트 제목을 입력하세요'}</h2>
-            <div className="preview-meta">
-              <span className="preview-date">
-                📅 {eventData.eventDate ? new Date(eventData.eventDate).toLocaleString('ko-KR') : '일시 미정'}
-              </span>
-              {eventData.registrationRequired && (
-                <span className="preview-registration">🎫 사전 등록 필요</span>
-              )}
-              {eventData.maxParticipants && (
-                <span className="preview-participants">👥 최대 {eventData.maxParticipants}명</span>
-              )}
-            </div>
-            {eventData.summary && (
-              <p className="preview-summary">{eventData.summary}</p>
-            )}
-            {eventData.imageUrl && (
-              <img src={eventData.imageUrl} alt="이벤트 이미지" className="preview-image" />
-            )}
-            <div 
-              className="preview-text"
-              dangerouslySetInnerHTML={{ 
-                __html: eventData.content || '<p>이벤트 내용을 입력하세요...</p>' 
-              }}
-            />
-          </div>
+        <div className="form-group">
+          <RichEditor
+            value={eventData.content}
+            onChange={(content) => handleInputChange('content', content)}
+            placeholder="이벤트 내용을 입력하세요. 이미지를 드래그하거나 복사해서 붙여넣을 수 있습니다."
+          />
         </div>
       </div>
 
       <style jsx>{`
+        .page {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+          min-height: 100vh;
+          background: #f8f9fa;
+        }
+
         .editor-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 30px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid #dee2e6;
+          padding: 20px 30px;
+          background: white;
+          border-radius: 8px 8px 0 0;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .editor-header h1 {
+          margin: 0;
+          color: #212529;
+          font-size: 24px;
         }
 
         .header-actions {
@@ -282,17 +253,60 @@ function AdminEventEdit() {
           gap: 10px;
         }
 
-        .editor-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 30px;
-          height: calc(100vh - 200px);
+        .header-actions button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          font-size: 14px;
+          transition: all 0.2s;
         }
 
-        .editor-form {
-          display: flex;
-          flex-direction: column;
+        .btn-cancel {
+          background: #6c757d;
+          color: white;
+        }
+
+        .btn-cancel:hover:not(:disabled) {
+          background: #5a6268;
+        }
+
+        .btn-save {
+          background: #17a2b8;
+          color: white;
+        }
+
+        .btn-save:hover:not(:disabled) {
+          background: #138496;
+        }
+
+        .btn-publish {
+          background: #28a745;
+          color: white;
+        }
+
+        .btn-publish:hover:not(:disabled) {
+          background: #218838;
+        }
+
+        .header-actions button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        .editor-container {
+          background: white;
+          border-radius: 0 0 8px 8px;
+          padding: 30px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
           gap: 20px;
+          margin-bottom: 20px;
         }
 
         .form-group {
@@ -300,214 +314,79 @@ function AdminEventEdit() {
           flex-direction: column;
         }
 
-        .form-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 15px;
-        }
-
         .form-group label {
           margin-bottom: 5px;
-          font-weight: bold;
+          font-weight: 500;
           color: #495057;
           font-size: 14px;
         }
 
-        .checkbox-label {
-          flex-direction: row !important;
-          align-items: center;
-          gap: 8px;
-          cursor: pointer;
-          margin-bottom: 0;
-          font-weight: normal !important;
+        .title-input, .datetime-input, .location-input, .number-input {
+          padding: 15px;
+          border: 2px solid #dee2e6;
+          border-radius: 8px;
+          font-size: 16px;
+          font-family: inherit;
+          transition: border-color 0.2s;
         }
 
         .title-input {
-          font-size: 24px;
-          font-weight: bold;
-          padding: 15px;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          outline: none;
+          font-size: 20px;
+          font-weight: 600;
+          grid-column: 1 / -1;
         }
 
-        .title-input:focus {
+        .title-input:focus, .datetime-input:focus, .location-input:focus, .number-input:focus {
+          outline: none;
           border-color: #007bff;
           box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
         }
 
-        .date-input,
-        .number-input,
-        .summary-input,
-        .image-input {
-          font-size: 14px;
-          padding: 10px;
-          border: 1px solid #dee2e6;
-          border-radius: 4px;
-          outline: none;
-        }
-
-        .date-input:focus,
-        .number-input:focus,
-        .summary-input:focus,
-        .image-input:focus {
-          border-color: #007bff;
-        }
-
-        .image-preview {
-          margin-top: 10px;
-        }
-
-        .image-preview img {
-          max-width: 100%;
-          max-height: 200px;
-          border-radius: 4px;
-          object-fit: cover;
-        }
-
-        .content-textarea {
-          flex: 1;
-          min-height: 250px;
-          padding: 15px;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          font-size: 14px;
-          line-height: 1.6;
-          resize: vertical;
-          outline: none;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .content-textarea:focus {
-          border-color: #007bff;
-          box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-        }
-
-        .editor-help {
-          background: #f8f9fa;
-          padding: 15px;
-          border-radius: 8px;
-          font-size: 12px;
-        }
-
-        .editor-help h3 {
-          margin: 0 0 10px 0;
-          font-size: 14px;
-        }
-
-        .editor-help ul {
-          margin: 0;
-          padding-left: 20px;
-        }
-
-        .editor-help li {
-          margin-bottom: 5px;
-          color: #6c757d;
-        }
-
-        .preview-section {
-          background: white;
-          border: 1px solid #dee2e6;
-          border-radius: 8px;
-          padding: 20px;
-          overflow-y: auto;
-        }
-
-        .preview-section h3 {
-          margin: 0 0 20px 0;
-          padding-bottom: 10px;
-          border-bottom: 1px solid #dee2e6;
-          color: #495057;
-        }
-
-        .preview-content {
-          line-height: 1.6;
-        }
-
-        .preview-title {
-          font-size: 24px;
-          font-weight: bold;
-          margin: 0 0 15px 0;
-          color: #212529;
-        }
-
-        .preview-meta {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          margin-bottom: 15px;
-          font-size: 14px;
-          color: #6c757d;
-        }
-
-        .preview-date,
-        .preview-registration,
-        .preview-participants {
+        .checkbox-label {
           display: flex;
           align-items: center;
-          gap: 5px;
-        }
-
-        .preview-summary {
-          color: #6c757d;
-          font-style: italic;
-          margin-bottom: 20px;
-          padding: 10px;
-          background: #f8f9fa;
-          border-radius: 4px;
-        }
-
-        .preview-image {
-          width: 100%;
-          max-height: 300px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 20px;
-        }
-
-        .preview-text {
-          color: #495057;
-        }
-
-        .btn {
-          padding: 8px 16px;
-          border: 1px solid transparent;
-          border-radius: 4px;
+          gap: 8px;
           cursor: pointer;
-          font-size: 14px;
-          text-decoration: none;
-          display: inline-block;
+          margin-top: 25px;
         }
 
-        .btn-primary {
-          background-color: #007bff;
-          color: white;
-        }
-
-        .btn-secondary {
-          background-color: #6c757d;
-          color: white;
-        }
-
-        .btn-outline {
-          background-color: white;
-          color: #007bff;
-          border-color: #007bff;
-        }
-
-        .btn:hover:not(:disabled) {
-          opacity: 0.9;
-        }
-
-        .btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
+        .checkbox-input {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
         }
 
         .loading {
           text-align: center;
-          padding: 40px;
+          padding: 50px;
+          font-size: 18px;
           color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+          .page {
+            padding: 10px;
+          }
+
+          .editor-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+          }
+
+          .header-actions {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .editor-container {
+            padding: 20px;
+          }
+
+          .form-row {
+            grid-template-columns: 1fr;
+            gap: 15px;
+          }
         }
       `}</style>
     </div>

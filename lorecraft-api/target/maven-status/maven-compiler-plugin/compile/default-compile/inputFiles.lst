@@ -18,7 +18,6 @@ E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\reposi
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\AdminCompanyController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\CompanyDto.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\EventDto.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\common\mockdata\MockDataProvider.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\util\JwtUtil.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\AdminDto.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\EventService.java
