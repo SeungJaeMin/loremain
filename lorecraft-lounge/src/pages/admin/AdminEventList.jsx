@@ -113,13 +113,13 @@ function AdminEventList() {
                       <div className="event-summary">{event.summary}</div>
                     )}
                   </td>
-                  <td>{new Date(event.eventDate).toLocaleDateString('ko-KR')}</td>
+                  <td>{new Date(event.event_date || event.eventDate).toLocaleDateString('ko-KR')}</td>
                   <td>
                     <span className={`status-badge ${event.published ? 'published' : 'draft'}`}>
                       {event.published ? '게시됨' : '임시저장'}
                     </span>
                   </td>
-                  <td>{new Date(event.createdAt).toLocaleDateString('ko-KR')}</td>
+                  <td>{new Date(event.created_at || event.createdAt).toLocaleDateString('ko-KR')}</td>
                   <td className="actions-cell">
                     <Link 
                       to={`/admin/events/edit/${event.id}`} 

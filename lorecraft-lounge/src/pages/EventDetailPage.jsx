@@ -69,8 +69,8 @@ function EventDetailPage() {
       <div className="detail-header">
         <h1 className="detail-title">{event.title}</h1>
         <div className="detail-meta">
-          이벤트 일자: {new Date(event.eventDate).toLocaleDateString('ko-KR')} | 
-          작성일: {new Date(event.createdAt).toLocaleDateString('ko-KR')}
+          이벤트 일자: {new Date(event.event_date || event.eventDate).toLocaleDateString('ko-KR')} | 
+          작성일: {new Date(event.created_at || event.createdAt).toLocaleDateString('ko-KR')}
         </div>
       </div>
       {event.imageUrl && (

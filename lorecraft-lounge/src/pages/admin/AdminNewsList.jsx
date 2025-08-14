@@ -117,7 +117,7 @@ function AdminNewsList() {
                       {news.published ? '게시됨' : '임시저장'}
                     </span>
                   </td>
-                  <td>{new Date(news.createdAt).toLocaleDateString('ko-KR')}</td>
+                  <td>{new Date(news.created_at || news.createdAt).toLocaleDateString('ko-KR')}</td>
                   <td className="actions-cell">
                     <Link 
                       to={`/admin/news/edit/${news.id}`} 

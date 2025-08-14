@@ -1,5 +1,4 @@
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\UserRepository.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\EntityBase.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\EventRepository.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\LoreCraftApiApplication.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\common\response\ApiResponse.java
@@ -12,17 +11,18 @@ E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\servic
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\filter\JwtAuthenticationFilter.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\base\BaseService.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\CompanyService.java
-E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\EntityCompany.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\NewsDto.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\repository\NewsRepository.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\AdminCompanyController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\CompanyDto.java
+E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\CompanyInfo.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\EventDto.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\util\JwtUtil.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\dto\AdminDto.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\service\EventService.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\EntityEvent.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\CompanyController.java
+E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\BaseEntity.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\NewsController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\controller\AdminNewsController.java
 E:\Workspace_lorecraft_Main\lorecraft-api\src\main\java\com\lorecraft\api\entity\EntityNews.java

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.lorecraft.api.repository.CompanyRepository;
 import com.lorecraft.api.dto.CompanyDto;
-import com.lorecraft.api.entity.EntityCompany;
+import com.lorecraft.api.entity.CompanyInfo;
 import com.lorecraft.api.service.base.BaseService;
 
 @Service
@@ -21,7 +21,7 @@ public class CompanyService extends BaseService {
     public CompanyDto.Response getCompanyInfo() {
         logServiceCall("getCompanyInfo");
         
-        EntityCompany company = companyRepository.findFirst();
+        CompanyInfo company = companyRepository.findFirst();
         
         if (company == null) {
             company = createDefaultCompany();
@@ -39,10 +39,10 @@ public class CompanyService extends BaseService {
         validateNotNull(request, "CompanyDto.Request");
         validateNotEmpty(request.getName(), "Company name");
         
-        EntityCompany company = companyRepository.findFirst();
+        CompanyInfo company = companyRepository.findFirst();
         
         if (company == null) {
-            company = new EntityCompany(
+            company = new CompanyInfo(
                 request.getName(), 
                 request.getEstablished(), 
                 request.getCeo(), 
@@ -63,7 +63,7 @@ public class CompanyService extends BaseService {
             );
         }
 
-        EntityCompany savedCompany = companyRepository.save(company);
+        CompanyInfo savedCompany = companyRepository.save(company);
         CompanyDto.Response response = convertToResponse(savedCompany);
         
         logServiceResult("updateCompanyInfo", response);
@@ -71,20 +71,20 @@ public class CompanyService extends BaseService {
         return response;
     }
 
-    private EntityCompany createDefaultCompany() {
-        EntityCompany defaultCompany = new EntityCompany(
+    private CompanyInfo createDefaultCompany() {
+        CompanyInfo defaultCompany = new CompanyInfo(
                 "LORECRAFT", 
-                "2025year", 
+                2025, 
                 "Hong Gil-dong", 
                 "Gyeonggi Suwon Somewhere 123",
                 "IP Development, TCG, Community, Content Platform Service",
-                "5people", 
+                5, 
                 "N/A"
         );
         return companyRepository.save(defaultCompany);
     }
 
-    private CompanyDto.Response convertToResponse(EntityCompany company) {
+    private CompanyDto.Response convertToResponse(CompanyInfo company) {
         validateNotNull(company, "Company");
         
         return new CompanyDto.Response(

@@ -1,5 +1,6 @@
 package com.lorecraft.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,7 @@ public class EventDto {
         private String content;
 
         @NotNull(message = "이벤트 날짜는 필수입니다")
+        @JsonProperty("eventDate")
         private LocalDateTime eventDate;
 
         @Size(max = 200, message = "장소는 200자 이하여야 합니다")

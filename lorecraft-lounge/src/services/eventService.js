@@ -93,5 +93,25 @@ export const eventService = {
       console.error('이벤트 등록 취소 실패:', error);
       throw error;
     }
+  },
+
+  publishEvent: async (id) => {
+    try {
+      const response = await apiClient.post(`/events/${id}/publish`);
+      return response.data;
+    } catch (error) {
+      console.error('이벤트 게시 실패:', error);
+      throw error;
+    }
+  },
+
+  unpublishEvent: async (id) => {
+    try {
+      const response = await apiClient.post(`/events/${id}/unpublish`);
+      return response.data;
+    } catch (error) {
+      console.error('이벤트 게시 중단 실패:', error);
+      throw error;
+    }
   }
 };

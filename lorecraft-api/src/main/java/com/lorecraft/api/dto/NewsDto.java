@@ -1,5 +1,6 @@
 package com.lorecraft.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -37,7 +38,9 @@ public class NewsDto {
         private String content;
         private String author;
         private boolean published;
+        @JsonProperty("createdAt")
         private LocalDateTime createdAt;
+        @JsonProperty("updatedAt")
         private LocalDateTime updatedAt;
         private String category;
 
@@ -68,6 +71,7 @@ public class NewsDto {
         private String title;
         private String author;
         private boolean published;
+        @JsonProperty("createdAt")
         private LocalDateTime createdAt;
         private String category;
 

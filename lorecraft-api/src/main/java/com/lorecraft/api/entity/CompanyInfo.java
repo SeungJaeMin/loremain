@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "entity_company")
-public class EntityCompany extends EntityBase {
+@Table(name = "company_info")
+public class CompanyInfo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +18,8 @@ public class EntityCompany extends EntityBase {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "established", length = 20)
-    private String established;
+    @Column(name = "established")
+    private Integer established;
 
     @Column(name = "ceo", length = 50)
     private String ceo;
@@ -30,16 +30,16 @@ public class EntityCompany extends EntityBase {
     @Column(name = "business", length = 1000)
     private String business;
 
-    @Column(name = "employees", length = 50)
-    private String employees;
+    @Column(name = "employees")
+    private Integer employees;
 
     @Column(name = "capital", length = 50)
     private String capital;
 
-    protected EntityCompany() {}
+    protected CompanyInfo() {}
 
-    public EntityCompany(String name, String established, String ceo, String address, 
-                   String business, String employees, String capital) {
+    public CompanyInfo(String name, Integer established, String ceo, String address, 
+                   String business, Integer employees, String capital) {
         this.name = name;
         this.established = established;
         this.ceo = ceo;
@@ -57,7 +57,7 @@ public class EntityCompany extends EntityBase {
         return name;
     }
 
-    public String getEstablished() {
+    public Integer getEstablished() {
         return established;
     }
 
@@ -73,7 +73,7 @@ public class EntityCompany extends EntityBase {
         return business;
     }
 
-    public String getEmployees() {
+    public Integer getEmployees() {
         return employees;
     }
 
@@ -81,8 +81,8 @@ public class EntityCompany extends EntityBase {
         return capital;
     }
 
-    public void updateCompanyInfo(String name, String established, String ceo, String address, 
-                                  String business, String employees, String capital) {
+    public void updateCompanyInfo(String name, Integer established, String ceo, String address, 
+                                  String business, Integer employees, String capital) {
         this.name = name;
         this.established = established;
         this.ceo = ceo;

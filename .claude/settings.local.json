@@ -15,7 +15,9 @@
       "Bash(./mvnw.cmd:*)",
       "Bash(move:*)",
       "Bash(powershell:*)",
-      "WebFetch(domain:www.epicgames.com)"
+      "WebFetch(domain:www.epicgames.com)",
+      "Bash(git mv:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

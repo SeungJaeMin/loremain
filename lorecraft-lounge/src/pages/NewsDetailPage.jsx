@@ -69,7 +69,7 @@ function NewsDetailPage() {
       <div className="detail-header">
         <h1 className="detail-title">{news.title}</h1>
         <div className="detail-meta">
-          {new Date(news.createdAt).toLocaleDateString('ko-KR')} | {news.author || '로어크래프트'}
+          {new Date(news.created_at || news.createdAt).toLocaleDateString('ko-KR')} | {news.author || '로어크래프트'}
         </div>
       </div>
       {news.imageUrl && (

@@ -10,8 +10,7 @@ public class CompanyDto {
         @Size(max = 100, message = "회사명은 100자 이하여야 합니다")
         private String name;
 
-        @Size(max = 20, message = "설립연도는 20자 이하여야 합니다")
-        private String established;
+        private Integer established;
 
         @Size(max = 50, message = "대표자명은 50자 이하여야 합니다")
         private String ceo;
@@ -22,24 +21,23 @@ public class CompanyDto {
         @Size(max = 1000, message = "사업내용은 1000자 이하여야 합니다")
         private String business;
 
-        @Size(max = 50, message = "임직원수는 50자 이하여야 합니다")
-        private String employees;
+        private Integer employees;
 
         @Size(max = 50, message = "자본금은 50자 이하여야 합니다")
         private String capital;
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
-        public String getEstablished() { return established; }
-        public void setEstablished(String established) { this.established = established; }
+        public Integer getEstablished() { return established; }
+        public void setEstablished(Integer established) { this.established = established; }
         public String getCeo() { return ceo; }
         public void setCeo(String ceo) { this.ceo = ceo; }
         public String getAddress() { return address; }
         public void setAddress(String address) { this.address = address; }
         public String getBusiness() { return business; }
         public void setBusiness(String business) { this.business = business; }
-        public String getEmployees() { return employees; }
-        public void setEmployees(String employees) { this.employees = employees; }
+        public Integer getEmployees() { return employees; }
+        public void setEmployees(Integer employees) { this.employees = employees; }
         public String getCapital() { return capital; }
         public void setCapital(String capital) { this.capital = capital; }
     }
@@ -47,15 +45,15 @@ public class CompanyDto {
     public static class Response {
         private Long id;
         private String name;
-        private String established;
+        private Integer established;
         private String ceo;
         private String address;
         private String business;
-        private String employees;
+        private Integer employees;
         private String capital;
 
-        public Response(Long id, String name, String established, String ceo, 
-                        String address, String business, String employees, String capital) {
+        public Response(Long id, String name, Integer established, String ceo, 
+                        String address, String business, Integer employees, String capital) {
             this.id = id;
             this.name = name;
             this.established = established;
@@ -68,11 +66,11 @@ public class CompanyDto {
 
         public Long getId() { return id; }
         public String getName() { return name; }
-        public String getEstablished() { return established; }
+        public Integer getEstablished() { return established; }
         public String getCeo() { return ceo; }
         public String getAddress() { return address; }
         public String getBusiness() { return business; }
-        public String getEmployees() { return employees; }
+        public Integer getEmployees() { return employees; }
         public String getCapital() { return capital; }
     }
 }
