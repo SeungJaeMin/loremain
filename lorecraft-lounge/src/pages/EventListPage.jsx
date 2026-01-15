@@ -28,7 +28,7 @@ function EventListPage() {
         setEventsList([
           {
             id: 1,
-            title: "${COMPANY.nameEn} 런칭 이벤트",
+            title: "${COMPANY.name.en} 런칭 이벤트",
             eventDate: "2025-09-01T14:00:00",
             location: "서울 강남구",
             maxParticipants: 100,

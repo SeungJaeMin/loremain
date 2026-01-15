@@ -1692,3 +1692,27 @@ body {
   color: white;
   padding-left: 28px;
 }
+
+/* Language Button Styles */
+.lang-btn {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.lang-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+

@@ -1,10 +1,15 @@
 // 텍스트 리소스 중앙 관리 파일
-// 회사명 변경 시 이 파일만 수정하면 됩니다.
+// 회사 정보 변경 시 이 파일만 수정하면 됩니다.
 
 export const COMPANY = {
-  name: "크팅미디어",
-  nameEn: "CTINGMEDIA",
-  description: "IP를 이용한 TCG, 미디어 콘텐츠, 커뮤니티를 운영하는 기업",
+  name: {
+    ko: "크팅미디어",
+    en: "CTINGMEDIA",
+  },
+  description: {
+    ko: "IP를 이용한 TCG, 미디어 콘텐츠, 커뮤니티를 운영하는 기업",
+    en: "A company operating TCG, media contents, and communities using IP",
+  },
 };
 
 export const CONTACT = {
@@ -24,23 +29,8 @@ export const URLS = {
   },
 };
 
-export const PAGES = {
-  companyInfo: {
-    heroTitle: `About ${COMPANY.nameEn}`,
-  },
-  recruit: {
-    introText: `We are looking for passionate and talented developers at ${COMPANY.nameEn}.`,
-    whyJoinTitle: `Why Join ${COMPANY.nameEn}?`,
-  },
-  events: {
-    launchEventTitle: `${COMPANY.nameEn} 런칭 이벤트`,
-  },
-};
-
-// 기본 export
 export default {
   COMPANY,
   CONTACT,
   URLS,
-  PAGES,
 };

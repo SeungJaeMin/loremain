@@ -22,7 +22,7 @@ function CompanyInfoPage() {
         setError('서버 연결에 실패했습니다.');
         // 폴백 데이터 사용
         setCompanyInfo({
-          name: COMPANY.nameEn,
+          name: COMPANY.name.en,
           established: "2025년",
           ceo: "홍길동",
           address: "경기도 수원시 어딘가구 어딘가길 123",
@@ -65,7 +65,7 @@ function CompanyInfoPage() {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1 className="hero-title">About {COMPANY.nameEn}</h1>
+          <h1 className="hero-title">About {COMPANY.name.en}</h1>
           <p className="hero-subtitle">
             창의적인 콘텐츠와 혁신적인 기술로 
             경험을 선사하는 엔터테인먼트 회사입니다.

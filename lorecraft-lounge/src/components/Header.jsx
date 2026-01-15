@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom'
 import { COMPANY } from '../constants/textResources'
+import { useLanguage } from '../contexts/LanguageContext'
 
 function Header() {
+  const { lang, setLang } = useLanguage()
+
   return (
     <header className="header">
       <div className="header-container">
         <div className="header-logo">
           <Link to="/" className="logo">
-            <img src="/logo_main.png" alt={COMPANY.nameEn} className="logo-image" />
+            <img src="/logo_main.png" alt={COMPANY.name[lang]} className="logo-image" />
           </Link>
         </div>
         <nav className="header-nav">
@@ -16,7 +19,6 @@ function Header() {
           <Link to="/news" className="nav-link">NEWS</Link>
           <Link to="/events" className="nav-link">EVENT</Link>
           <Link to="/recruit" className="nav-link">RECRUIT</Link>
-          {/* <Link to="/irbook" className="nav-link">IRBook</Link> */}
           <div className="nav-link nav-dropdown">
             OFFICIAL SITE
             <div className="dropdown-menu">
@@ -29,7 +31,20 @@ function Header() {
             </div>
           </div>
         </nav>
-        <div className="header-spacer"></div>
+        <div className="header-spacer">
+          <button 
+            className={lang === 'ko' ? 'lang-btn active' : 'lang-btn'}
+            onClick={() => setLang('ko')}
+          >
+            KO
+          </button>
+          <button 
+            className={lang === 'en' ? 'lang-btn active' : 'lang-btn'}
+            onClick={() => setLang('en')}
+          >
+            EN
+          </button>
+        </div>
       </div>
     </header>
   )

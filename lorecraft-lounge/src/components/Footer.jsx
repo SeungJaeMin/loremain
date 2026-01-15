@@ -23,8 +23,8 @@ function Footer() {
   }
   const footerData = {
     company: {
-      name: COMPANY.nameEn,
-      description: COMPANY.description,
+      name: COMPANY.name.en,
+      description: COMPANY.description.ko,
       established: "2025년",
       ceo: "홍길동"
     },

@@ -102,7 +102,7 @@ function RecruitPage() {
           <h1 className="hero-title">Join Our Quest</h1>
           <p className="hero-subtitle">
             Build the future of entertainment with passionate creators, innovative thinkers, 
-            and talented developers at ${COMPANY.nameEn}.
+            and talented developers at ${COMPANY.name.en}.
           </p>
           <div className="hero-stats">
             <div className="stat">
@@ -197,7 +197,7 @@ function RecruitPage() {
 
         {/* Benefits Section */}
         <section className="benefits-section">
-          <h2>Why Join ${COMPANY.nameEn}?</h2>
+          <h2>Why Join ${COMPANY.name.en}?</h2>
           <div className="benefits-grid">
             <div className="benefit-card">
               <div className="benefit-icon">💡</div>

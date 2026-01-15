@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import './App.css'
+import { LanguageProvider } from './contexts/LanguageContext'
 
 // 레이아웃 컴포넌트
 import Layout from './components/Layout'
@@ -32,6 +33,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   return (
+    <LanguageProvider>
     <Router>
       <Routes>
         {/* 로그인 페이지 (레이아웃 없음) */}
@@ -64,6 +66,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
+    </LanguageProvider>
   )
 }
 
