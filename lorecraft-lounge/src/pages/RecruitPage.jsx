@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { COMPANY, CONTACT } from '../constants/textResources'
 
 function RecruitPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -101,7 +102,7 @@ function RecruitPage() {
           <h1 className="hero-title">Join Our Quest</h1>
           <p className="hero-subtitle">
             Build the future of entertainment with passionate creators, innovative thinkers, 
-            and talented developers at LORECRAFT.
+            and talented developers at ${COMPANY.nameEn}.
           </p>
           <div className="hero-stats">
             <div className="stat">
@@ -196,7 +197,7 @@ function RecruitPage() {
 
         {/* Benefits Section */}
         <section className="benefits-section">
-          <h2>Why Join LORECRAFT?</h2>
+          <h2>Why Join ${COMPANY.nameEn}?</h2>
           <div className="benefits-grid">
             <div className="benefit-card">
               <div className="benefit-icon">💡</div>
@@ -241,7 +242,7 @@ function RecruitPage() {
               <button className="cta-secondary">Send Us Your Resume</button>
             </div>
             <div className="contact-info">
-              <p>Questions? Reach out to us at <a href="mailto:careers@lorecraft.com">careers@lorecraft.com</a></p>
+              <p>Questions? Reach out to us at <a href="mailto:${CONTACT.careers}">{CONTACT.careers}</a></p>
             </div>
           </div>
         </section>

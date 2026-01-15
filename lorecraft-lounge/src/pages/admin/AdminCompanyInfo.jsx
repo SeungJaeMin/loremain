@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CONTACT } from '../../constants/textResources'
 import { companyService } from '../../services/companyService';
 
 function AdminCompanyInfo() {
@@ -171,7 +172,7 @@ function AdminCompanyInfo() {
               id="email"
               value={companyInfo.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              placeholder="contact@lorecraft.com"
+              placeholder="${CONTACT.email}"
             />
           </div>
         </div>

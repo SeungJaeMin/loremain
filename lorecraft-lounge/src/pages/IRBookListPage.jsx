@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { CONTACT } from '../constants/textResources'
 
 function IRBookListPage() {
   const irReports = [
@@ -165,7 +166,7 @@ function IRBookListPage() {
           <div className="contact-card">
             <h4>IR 담당자</h4>
             <div className="contact-details">
-              <p><strong>이메일:</strong> ir@lorecraft.co.kr</p>
+              <p><strong>이메일:</strong> {CONTACT.ir}</p>
               <p><strong>전화:</strong> 02-1234-5678</p>
               <p><strong>팩스:</strong> 02-1234-5679</p>
             </div>

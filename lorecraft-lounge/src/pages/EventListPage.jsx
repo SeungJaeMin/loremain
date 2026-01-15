@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { COMPANY } from '../constants/textResources'
 import { useState, useEffect } from 'react';
 import { eventService } from '../services/eventService';
 
@@ -27,7 +28,7 @@ function EventListPage() {
         setEventsList([
           {
             id: 1,
-            title: "LORECRAFT 런칭 이벤트",
+            title: "${COMPANY.nameEn} 런칭 이벤트",
             eventDate: "2025-09-01T14:00:00",
             location: "서울 강남구",
             maxParticipants: 100,

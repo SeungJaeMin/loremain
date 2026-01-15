@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { COMPANY, CONTACT, URLS } from '../constants/textResources'
 
 function Footer() {
   const [showAdminLogin, setShowAdminLogin] = useState(false)
@@ -22,14 +23,14 @@ function Footer() {
   }
   const footerData = {
     company: {
-      name: "LORECRAFT",
-      description: "We craft lore and adventures for everyone.",
+      name: COMPANY.nameEn,
+      description: COMPANY.description,
       established: "2025년",
       ceo: "홍길동"
     },
     contact: {
       address: "경기도 수원시 어딘가구 어딘가길 123",
-      email: "contact@lorecraft.co.kr",
+      email: CONTACT.email,
       phone: "031-1234-5678",
       fax: "031-1234-5679"
     },
@@ -37,7 +38,7 @@ function Footer() {
       registration: "123-45-67890",
       license: "제2025-경기수원-0123호",
       privacy: "김개인정보",
-      ir: "ir@lorecraft.co.kr"
+      ir: CONTACT.ir
     },
     links: {
       company: [
@@ -47,8 +48,8 @@ function Footer() {
       ],
       service: [
         { name: "TCG Estela", url: "https://tcg-estela.example.com" },
-        { name: "커뮤니티", url: "https://community.lorecraft.co.kr" },
-        { name: "공식스토어", url: "https://store.lorecraft.co.kr" }
+        { name: "커뮤니티", url: URLS.community },
+        { name: "공식스토어", url: URLS.store }
       ],
       support: [
         { name: "뉴스", path: "/news" },
@@ -57,10 +58,10 @@ function Footer() {
         { name: "문의하기", path: "/contact" }
       ],
       social: [
-        { name: "YouTube", url: "https://youtube.com/@lorecraft", icon: "📺" },
-        { name: "Instagram", url: "https://instagram.com/lorecraft_official", icon: "📷" },
-        { name: "Discord", url: "https://discord.gg/lorecraft", icon: "💬" },
-        { name: "Twitter", url: "https://twitter.com/lorecraft_kr", icon: "🐦" }
+        { name: "YouTube", url: URLS.social.youtube, icon: "📺" },
+        { name: "Instagram", url: URLS.social.instagram, icon: "📷" },
+        { name: "Discord", url: URLS.social.discord, icon: "💬" },
+        { name: "Twitter", url: URLS.social.twitter, icon: "🐦" }
       ]
     }
   };

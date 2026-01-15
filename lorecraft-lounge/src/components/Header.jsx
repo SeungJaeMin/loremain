@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { COMPANY } from '../constants/textResources'
 
 function Header() {
   return (
@@ -6,7 +7,7 @@ function Header() {
       <div className="header-container">
         <div className="header-logo">
           <Link to="/" className="logo">
-            LORECRAFT
+            <img src="/logo_main.png" alt={COMPANY.nameEn} className="logo-image" />
           </Link>
         </div>
         <nav className="header-nav">

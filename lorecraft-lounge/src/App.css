@@ -36,6 +36,7 @@ body {
 }
 
 .header-container {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -46,7 +47,10 @@ body {
 }
 
 .header-logo {
-  justify-self: start;
+  position: absolute;
+  left: 15%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .logo {
@@ -56,6 +60,13 @@ body {
   color: #2c3e50;
   letter-spacing: -1px;
   transition: color 0.3s ease;
+
+}
+
+.logo-image {
+  height: 150px;
+  width: auto;
+  display: block;
 }
 
 .logo:hover {
@@ -63,6 +74,9 @@ body {
 }
 
 .header-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 50px;
   align-items: center;
@@ -1334,6 +1348,7 @@ body {
 /* vw 기반 반응형 디자인 - 20%~80% 영역 최적화 */
 @media (min-width: 1600px) {
   .header-container {
+  position: relative;
     max-width: 1600px;
     padding-left: 5vw;
     padding-right: 5vw;
@@ -1360,6 +1375,9 @@ body {
   }
   
   .header-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
     gap: 60px;
   }
   
@@ -1370,6 +1388,7 @@ body {
 
 @media (min-width: 1920px) {
   .header-container {
+  position: relative;
     max-width: 1800px;
     padding-left: 5vw;
     padding-right: 5vw;
@@ -1396,6 +1415,9 @@ body {
   }
   
   .header-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
     gap: 70px;
   }
   
