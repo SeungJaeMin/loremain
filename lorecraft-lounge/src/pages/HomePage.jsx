@@ -133,7 +133,7 @@ function HomePage() {
                 </svg>
               </div>
               <p className="toss-escrow-text">대금 보호 중</p>
-              <p className="toss-escrow-amount">₩1,500,000</p>
+              <p className="toss-escrow-amount">₩1,500,000,000</p>
             </div>
           </div>
         </div>

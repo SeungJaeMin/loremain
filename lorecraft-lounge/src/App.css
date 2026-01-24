@@ -303,6 +303,140 @@ body {
   color: #3182f6;
 }
 
+/* 햄버거 버튼 (모바일) */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1001;
+}
+
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #2c3e50;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* 모바일 메뉴 오버레이 */
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* 모바일 메뉴 드로어 */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: right 0.3s ease;
+  padding: 80px 24px 24px;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: 16px 20px;
+  color: #2c3e50;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-link:hover {
+  background: #f5f7fa;
+  color: #3182f6;
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  background: #e5e8eb;
+  margin: 12px 0;
+}
+
+.mobile-lang-selector {
+  display: flex;
+  gap: 8px;
+  padding: 16px 0;
+  border-top: 1px solid #e5e8eb;
+}
+
+.mobile-lang-selector button {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #e5e8eb;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7684;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-lang-selector button:hover {
+  border-color: #3182f6;
+  color: #3182f6;
+}
+
+.mobile-lang-selector button.active {
+  background: #3182f6;
+  border-color: #3182f6;
+  color: white;
+}
+
+.lang-dropdown-menu button:hover {
+  background: #f5f5f5;
+  color: #3182f6;
+}
+
 /* 공통 페이지 스타일 */
 .page-container {
   width: 100vw;
@@ -669,8 +803,28 @@ body {
 }
 
 @media (max-width: 640px) {
-  .header-nav {
+  .nav-container {
     display: none;
+  }
+
+  .actions-container {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+
+  .mobile-menu-overlay {
+    display: block;
+  }
+
+  .logo-image {
+    height: 60px;
   }
 
   .page-header h1 {
