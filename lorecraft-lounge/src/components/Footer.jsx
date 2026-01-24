@@ -23,38 +23,34 @@ function Footer() {
   }
   const footerData = {
     company: {
-      name: COMPANY.name.en,
+      name: "크팅미디어",
       description: COMPANY.description.ko,
-      established: "2025년",
-      ceo: "홍길동"
+      established: "2025년 09월",
+      ceo: "손형직"
     },
     contact: {
-      address: "경기도 수원시 어딘가구 어딘가길 123",
+      address: "경기도 화성시 봉담읍 북촌길 10-4, 3동 302호",
       email: CONTACT.email,
-      phone: "031-1234-5678",
-      fax: "031-1234-5679"
+      phone: "031-000-0000",
+      fax: ""
     },
     business: {
-      registration: "123-45-67890",
-      license: "제2025-경기수원-0123호",
-      privacy: "김개인정보",
+      registration: "392-58-00948",
+      license: "",
+      privacy: "손형직",
       ir: CONTACT.ir
     },
     links: {
       company: [
-        { name: "회사소개", path: "/company/info" },
-        { name: "회사비전", path: "/company/vision" },
-        { name: "사업영역", path: "/company/info#business" }
+        { name: "회사소개", path: "/about" },
+        { name: "뉴스", path: "/news" },
+        { name: "문의하기", path: "/contact" }
       ],
       service: [
-        { name: "TCG Estela", url: "https://tcg-estela.example.com" },
-        { name: "커뮤니티", url: URLS.community },
-        { name: "공식스토어", url: URLS.store }
+        { name: "크팅플랫폼", url: "https://cting-web.vercel.app/" }
       ],
       support: [
         { name: "뉴스", path: "/news" },
-        { name: "이벤트", path: "/events" },
-        { name: "IRBook", path: "/irbook" },
         { name: "문의하기", path: "/contact" }
       ],
       social: [
@@ -162,7 +158,7 @@ function Footer() {
           <div className="footer-legal">
             <div className="legal-info">
               <span>사업자등록번호: {footerData.business.registration}</span>
-              <span>통신판매업신고: {footerData.business.license}</span>
+              <span>대표: {footerData.company.ceo}</span>
               <span>개인정보보호책임자: {footerData.business.privacy}</span>
             </div>
             <div className="legal-links">

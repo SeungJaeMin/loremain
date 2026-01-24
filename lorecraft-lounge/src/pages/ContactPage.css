@@ -1,0 +1,168 @@
+/* ========================================
+   ContactPage.css - Contact Us 페이지
+   ======================================== */
+
+.contact-page {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.contact-hero {
+  background: linear-gradient(135deg, #3182f6 0%, #1b64da 100%);
+  padding: 100px 20px 80px;
+  text-align: center;
+  color: white;
+}
+
+.contact-hero h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+}
+
+.contact-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+}
+
+.contact-info-section h2,
+.contact-form-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #191f28;
+  margin-bottom: 2rem;
+}
+
+.contact-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.contact-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.contact-details h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #191f28;
+  margin-bottom: 4px;
+}
+
+.contact-details p {
+  color: #6b7684;
+  font-size: 0.95rem;
+}
+
+.contact-form-section {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #191f28;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 14px 16px;
+  border: 1px solid #e5e8eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #3182f6;
+  box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submit-btn {
+  background: #3182f6;
+  color: white;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #1b64da;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(49, 130, 246, 0.3);
+}
+
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contact-form-section {
+    padding: 30px 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .contact-hero {
+    padding: 80px 20px 60px;
+  }
+
+  .contact-container {
+    padding: 40px 16px;
+  }
+}

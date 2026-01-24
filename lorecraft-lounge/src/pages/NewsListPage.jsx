@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { newsService } from '../services/newsService';
+import './NewsListPage.css';
 
 function NewsListPage() {
   const [newsList, setNewsList] = useState([]);

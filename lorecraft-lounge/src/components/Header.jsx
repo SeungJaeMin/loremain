@@ -16,20 +16,14 @@ function Header() {
         
         <div className="nav-container">
           <nav className="header-nav">
-            <Link to="/company/info" className="nav-link">INFO</Link>
-            <Link to="/company/vision" className="nav-link">VISION</Link>
-            <Link to="/news" className="nav-link">NEWS</Link>
+            <Link to="/about" className="nav-link">About Us</Link>
+            <Link to="/news" className="nav-link">News</Link>
+            <Link to="/contact" className="nav-link">Contact Us</Link>
             <div className="nav-link nav-dropdown">
-              OFFICIAL SITE
+              Official Site
               <div className="dropdown-menu">
                 <a href="https://cting-web.vercel.app/" target="_blank" rel="noopener noreferrer" className="dropdown-item">
                   크팅플랫폼
-                </a>
-                <a href="https://tcg-lounge.example.com" target="_blank" rel="noopener noreferrer" className="dropdown-item">
-                  TCG Lounge
-                </a>
-                <a href="https://official-store.example.com" target="_blank" rel="noopener noreferrer" className="dropdown-item">
-                  OFFICIAL STORE
                 </a>
               </div>
             </div>

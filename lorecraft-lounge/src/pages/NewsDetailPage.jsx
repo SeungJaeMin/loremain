@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { newsService } from '../services/newsService';
+import './DetailPage.css';
 
 function NewsDetailPage() {
   const { id } = useParams();

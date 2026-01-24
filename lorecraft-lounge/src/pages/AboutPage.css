@@ -1,0 +1,283 @@
+/* ========================================
+   AboutPage.css - toss.im/team 스타일 슬라이드
+   ======================================== */
+
+.about-page {
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+/* 각 슬라이드 공통 */
+.about-slide {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  padding: 80px 20px;
+}
+
+/* 슬라이드 콘텐츠 */
+.slide-content {
+  text-align: center;
+  max-width: 900px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-slide.visible .slide-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-content-wide {
+  max-width: 1200px;
+}
+
+/* 라벨 */
+.slide-label {
+  display: inline-block;
+  background: rgba(49, 130, 246, 0.1);
+  color: #3182f6;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
+.slide-label-light {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 타이틀 */
+.about-slide h1 {
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  letter-spacing: -2px;
+}
+
+.about-slide h2 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: #191f28;
+  line-height: 1.25;
+  margin-bottom: 2rem;
+  letter-spacing: -1px;
+}
+
+/* 설명 텍스트 */
+.slide-desc {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 300;
+}
+
+.slide-desc-large {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: #6b7684;
+  line-height: 1.8;
+  font-weight: 400;
+}
+
+/* 슬라이드 배경 */
+.about-slide-hero {
+  background: linear-gradient(135deg, #3182f6 0%, #1b64da 100%);
+}
+
+.about-slide-white {
+  background: #ffffff;
+}
+
+.about-slide-gray {
+  background: #f8f9fa;
+}
+
+.about-slide-dark {
+  background: linear-gradient(135deg, #191f28 0%, #2c3e50 100%);
+}
+
+.about-slide-dark h2 {
+  color: white;
+}
+
+.about-slide-blue {
+  background: linear-gradient(135deg, #3182f6 0%, #1b64da 100%);
+}
+
+.about-slide-blue h2 {
+  color: white;
+}
+
+.about-slide-blue .slide-desc-large {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 스크롤 인디케이터 */
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 500;
+  animation: bounce 2s infinite;
+}
+
+.scroll-arrow {
+  width: 24px;
+  height: 24px;
+  border-right: 2px solid rgba(255, 255, 255, 0.7);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+  transform: rotate(45deg);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(10px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(5px);
+  }
+}
+
+/* Values 섹션 */
+.values-row {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 4rem;
+  flex-wrap: wrap;
+}
+
+.value-item {
+  text-align: center;
+  min-width: 150px;
+}
+
+.value-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.value-item h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #191f28;
+  margin-bottom: 0.5rem;
+}
+
+.value-item p {
+  font-size: 1rem;
+  color: #6b7684;
+}
+
+/* Company Stats */
+.company-stats {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  margin-top: 4rem;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: #3182f6;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+}
+
+.stat-name {
+  display: block;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+/* CTA 버튼 */
+.slide-cta-btn {
+  display: inline-block;
+  background: white;
+  color: #3182f6;
+  padding: 20px 48px;
+  border-radius: 14px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 2rem;
+  transition: all 0.3s ease;
+}
+
+.slide-cta-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .values-row {
+    gap: 40px;
+  }
+
+  .company-stats {
+    gap: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-slide {
+    padding: 100px 20px 60px;
+  }
+
+  .values-row {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .company-stats {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .scroll-indicator {
+    bottom: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide-label {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+
+  .slide-cta-btn {
+    padding: 16px 32px;
+    font-size: 1rem;
+  }
+}
